@@ -37,5 +37,5 @@ else
 fi
 
 # Run
-exec "$java_exe_path" --enable-preview "${vm_args[@]}" -Dcaller_script_dir="$(pwd)" -cp "$bot_path" org.notarb.launcher.Main "${notarb_args[@]}"
+exec "$java_exe_path" --enable-preview --add-exports=java.base/jdk.internal.util=ALL-UNNAMED "${vm_args[@]}" -Dcaller_script_dir="$(pwd)" -cp "$bot_path" org.notarb.launcher.Main "${notarb_args[@]}"
 echo "NotArb exited with code $?"
