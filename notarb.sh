@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# Move to the correct workdir to prevent path issues
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+task_config_path="$(pwd)/tasks/$*.toml"
+java_exe_path=""
+
+execute() {
+  if [ ! -f "$task_config_path" ]; then
+    echo "ERROR: Could not find task config file:"
+    echo "       $task_config_path"
+    exit 1
+  fi
+
+  detect_or_install_java
+
+  exec $java_exe_path \
+    -Dcaller.dir="$(pwd)" \
+    -Djava.exe.path="$java_exe_path" \
+    -Dtask.config.path="$task_config_path" \
+    -cp "notarb-launcher.jar" org.notarb.launcher.Main
+
+  echo "NotArb exited with code $?"
+}
+
+detect_or_install_java() {
+  kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
+
+  if [[ "$kernel" == *"linux"* ]]; then
+    os="linux"
+  elif [[ "$kernel" == *"darwin"* ]]; then
+    os="mac"
+  else
+    echo "Unsupported OS: $kernel"
+    exit 1
+  fi
+
+  arch=$(uname -m | tr '[:upper:]' '[:lower:]')
+  if [[ "$arch" == "aarch64" || "$arch" == "arm64" ]]; then
+    arch="aarch64"
+  else
+    arch="x64"
+  fi
+
+  case "$os-$arch" in
+  linux-aarch64)
+    java_url="https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_linux-aarch64_bin.tar.gz"
+    java_exe_path="jdk-24.0.1/bin/java"
+    ;;
+  linux-x64)
+    java_url="https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_linux-x64_bin.tar.gz"
+    java_exe_path="jdk-24.0.1/bin/java"
+    ;;
+  mac-aarch64)
+    java_url="https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_macos-aarch64_bin.tar.gz"
+    java_exe_path="jdk-24.0.1.jdk/Contents/Home/bin/java"
+    ;;
+  mac-x64)
+    java_url="https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_macos-x64_bin.tar.gz"
+    java_exe_path="jdk-24.0.1.jdk/Contents/Home/bin/java"
+    ;;
+  esac
+
+  java_exe_path="$(pwd)/$java_exe_path"
+
+  if [ -f "$java_exe_path" ]; then
+    echo "$java_exe_path"
+    "$java_exe_path" --version
+    if [ $? -eq 0 ]; then
+      echo "Java installation not required."
+      return
+    fi
+  fi
+
+  echo "Installing Java, please wait..."
+  echo "$java_url"
+
+  # Download and extract Java
+  temp_file="$(pwd)/java_download_temp.tar.gz"
+  download_file "$java_url" "$temp_file"
+  tar -xzf "$temp_file"
+  rm -f "$temp_file"
+
+  # Verify installed Java executable
+  echo "$java_exe_path"
+  "$java_exe_path" --version
+  if [ $? -eq 0 ]; then
+      echo "Java installation successful!"
+  else
+      echo "Warning: Java installation could not be verified!"
+  fi
+}
+
+download_file() {
+    local url="$1"
+    local output="$2"
+
+    if command -v wget >/dev/null 2>&1; then
+        wget -O "$output" "$url"
+    elif command -v curl >/dev/null 2>&1; then
+        curl -o "$output" "$url"
+    else
+        echo "Error: Neither wget nor curl is installed."
+        exit 1
+    fi
+}
+
+execute

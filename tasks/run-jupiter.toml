@@ -1,0 +1,8 @@
+task="jupiter-server"
+
+config_file_path="./jupiter-bot/jupiter-config.toml"
+
+jvm_args=[
+  "-Xmx4096m",
+  "-XX:+UseSerialGC",
+]
