@@ -30,5 +30,4 @@ _Based on your operating system, use either `bash notarb.sh` or `notarb.bat`_
 
 ## Offical Links
 - [Discord Community](https://discord.notarb.org)
-- [Example Arbitrage Configurations](https://examples.notarb.org)
 - [Download NotArb](https://download.notarb.org)
