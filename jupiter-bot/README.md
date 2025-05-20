@@ -1,4 +1,4 @@
-# NotArb Bot Configuration Guide
+# NotArb Jupiter Bot Configuration Guide
 
 ## Overview
 
