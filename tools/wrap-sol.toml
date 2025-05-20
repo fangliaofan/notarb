@@ -1,5 +1,5 @@
 [launcher]
-task="unwrap-wsol"
+task="wrap-sol"
 
 [wrap]
 keypair_path="/path/to/keypair"
