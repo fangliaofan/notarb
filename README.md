@@ -18,13 +18,14 @@
 
 ### Getting Started Examples
 
-_Based on your operating system, use either `notarb.sh` or `notarb.bat`_
+_Based on your operating system, use either `bash notarb.sh` or `notarb.bat`_
 
 **Jupiter Bot Example:**
-> . ./notarb.sh jupiter-bot/example-jito
+> bash notarb.sh jupiter-bot/example-jito
+
 
 **On-Chain Bot Example:**
-> . ./notarb.sh onchain-bot/example
+> bash notarb.sh onchain-bot/example
 
 
 ## Offical Links
