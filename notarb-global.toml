@@ -3,4 +3,4 @@
 #   Example 2: jito_uuid="${MY_SECRET_UUID}" (where MY_SECRET_UUID="1415201182" would be defined below)
 
 DEFAULT_KEYPAIR_PATH="/path/to/keypair"
-DEFAULT_SENDER_RPC_URL="your.rpc.url"
+DEFAULT_RPC_URL="your.rpc.url"

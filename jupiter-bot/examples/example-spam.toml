@@ -1,0 +1,79 @@
+# For more in-depth information on configuration, please visit:
+# https://config.notarb.org/
+
+[bot_misc] # required
+keypair_path="/path/to/keypair.json OR /path/to/keypair.txt" # required for signing transactions
+swap_threads=0 # Leave at 0 if not sure.
+jito_threads=0 # Leave at 0 if not sure.
+spam_threads=0 # Leave at 0 if not sure.
+
+[jupiter] # required
+url="http://127.0.0.1:8080/"
+http_timeout_ms=3000
+http_pool_max_size=50
+
+[[rpc]]
+id="sender-1" # change this to any name you'd like, it's used as an identifier throughout this file
+url="https://api.mainnet-beta.solana.com" # change this to your rpc's url
+http_timeout_ms=5000
+
+[[rpc]]
+id="sender-2" # change this to any name you'd like, it's used as an identifier throughout this file
+url="https://api.mainnet-beta.solana.com" # change this to your rpc's url
+http_timeout_ms=5000
+
+[simulation_mode] # optional
+enabled=false
+rpc="sender-1"
+skip_known_jupiter_errors=true
+skip_successful_responses=false
+skip_no_profit_responses=false
+force_blockhash=true
+
+[[static_mints]]
+enabled=true
+random_order=true
+max_per_cycle=5
+list=[
+    "So11111111111111111111111111111111111111112",  # sol
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", # usdt
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", # usdc
+    "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R", # ray
+    "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn", # jitosol
+    "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs", # weth
+    "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh", # wbtc
+    "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",  # jup
+    "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3", # pyth
+    "5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm", # inf
+]
+
+[[file_mints]]
+enabled=false
+random_order=true
+max_per_cycle=5
+path="/path/to/mints.txt OR /path/to/mints.json"
+
+####################################
+#        Define your swaps!        #
+####################################
+
+#########
+#  SOL  #
+#########
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
+wrap_unwrap_sol=false
+coldown="1s" # examples: 100ms, 5s, 2m
+
+[[swap.strategy]]
+min_spend=2
+max_spend=6
+min_gain_sol=0.05
+spam_senders=[
+    { rpc="sender-1", skip_preflight=true, max_retries=0 },
+    { rpc="sender-2", skip_preflight=true, max_retries=0 },
+]
+spam_max_opportunity_age_ms=1500

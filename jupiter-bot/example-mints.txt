@@ -1,0 +1,13 @@
+So11111111111111111111111111111111111111112     # wsol
+EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v    # usdc
+Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB    # usdt
+2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo    # pyusd
+85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ    # w
+3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh    # wbtc
+7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs    # weth
+JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN     # jup
+27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4    # jlp
+KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS     # kmno
+6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN    # trump
+DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263    # bonk
+EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm    # wif

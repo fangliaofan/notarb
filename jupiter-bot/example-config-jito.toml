@@ -1,0 +1,55 @@
+[bot_misc]
+keypair_path="${DEFAULT_KEYPAIR_PATH}"
+protect_keypair=false
+acknowledge_terms_of_service=false
+acknowledge_external_price_risk=false
+acknowledge_experimental_release=false
+
+[jupiter]
+url="http://127.0.0.1:8080"
+workers=4 # the amount of connections and threads used to make jupiter requests
+connect_timeout_ms=1000
+request_timeout_ms=1000
+
+[blockhash_fetcher]
+rpc_url="${DEFAULT_RPC_URL}"
+
+[token_accounts_fetcher] # not required but encouraged
+rpc_url="${DEFAULT_RPC_URL}"
+
+[[file_mints]]
+enabled=true
+update_seconds=5
+random_order=false
+path="example-mints.txt"
+
+[plugin]
+class="org.notarb.DefaultJito"
+include_paths=[]
+
+[[jito_rpc]]
+enabled=true
+url="https://slc.mainnet.block-engine.jito.wtf"
+identifier=1
+requests_per_second=1
+connections=5 # warning: too many connections can slow down sending due to idle connections timing out
+connect_timeout_ms=5000
+request_timeout_ms=5000
+queue_timeout_ms=7500
+priority_queue=false
+always_queue=true
+
+## SOL (Jito)
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
+cooldown_ms=10
+
+[[swap.strategy]]
+enabled=true
+min_spend=0.0001
+max_spend=0.03
+cu_limit=369_369
+static_tip_lamports=20_000

@@ -6,5 +6,5 @@ keypair_path="${DEFAULT_KEYPAIR_PATH}"
 amount_sol=0.1 # amount_lamports is also available
 priority_fee_lamports=0 # to avoid accidents, this can only be set in lamports
 senders=[
-    { rpc_url="${DEFAULT_SENDER_RPC_URL}", skip_preflight=true, max_retries=0 }
+    { rpc_url="${DEFAULT_RPC_URL}", skip_preflight=true, max_retries=0 }
 ]
