@@ -16,7 +16,7 @@
 
 ---
 
-### Getting Started Examples
+### Getting Started
 
 _Based on your operating system, use either `bash notarb.sh` or `notarb.bat`_
 
