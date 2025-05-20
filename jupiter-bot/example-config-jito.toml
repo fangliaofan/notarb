@@ -1,3 +1,6 @@
+# For in depth config information, please refer to:
+# https://github.com/NotArb/Release/tree/main/jupiter-bot#readme
+
 [bot_misc]
 keypair_path="${DEFAULT_KEYPAIR_PATH}"
 protect_keypair=false
@@ -7,14 +10,14 @@ acknowledge_experimental_release=false
 
 [jupiter]
 url="http://127.0.0.1:8080"
-workers=4 # the amount of connections and threads used to make jupiter requests
+workers=4
 connect_timeout_ms=1000
 request_timeout_ms=1000
 
 [blockhash_fetcher]
 rpc_url="${DEFAULT_RPC_URL}"
 
-[token_accounts_fetcher] # not required but encouraged
+[token_accounts_fetcher]
 rpc_url="${DEFAULT_RPC_URL}"
 
 [[file_mints]]
@@ -32,7 +35,7 @@ enabled=true
 url="https://slc.mainnet.block-engine.jito.wtf"
 identifier=1
 requests_per_second=1
-connections=5 # warning: too many connections can slow down sending due to idle connections timing out
+connections=5
 connect_timeout_ms=5000
 request_timeout_ms=5000
 queue_timeout_ms=7500

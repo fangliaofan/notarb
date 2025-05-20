@@ -1,3 +1,6 @@
+# For in depth config information, please refer to:
+# https://github.com/NotArb/Release/tree/main/jupiter-bot#readme
+
 [bot_misc]
 keypair_path="${DEFAULT_KEYPAIR_PATH}"
 protect_keypair=false
