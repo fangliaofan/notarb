@@ -8,10 +8,9 @@
 - **On-Chain Arbitrage Bot** - Performs direct chain analysis for profit maximizing arbitrage
 - **Essential Tools** - Including WSOL wrapping/unwrapping and other utilities
 
-#### Critical Security Notes
-⚠️ **Always**:
-- Download NotArb only from our [official GitHub](https://github.com/NotArb/Release)
-- Keep private keys on secure, non-shared systems
+#### ⚠ Critical Security Notes
+- Never use NotArb files that you did not directly download from our official GitHub page. 
+- Never put private keys on shared or unsecured hosts.
 
 [Download NotArb](https://download.notarb.org/)
 
