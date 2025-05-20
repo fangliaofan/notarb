@@ -1,6 +1,14 @@
 # For in depth config information, please refer to:
 # https://github.com/NotArb/Release/tree/main/jupiter-bot#readme
 
+[launcher]
+task="jupiter-bot"
+jvm_args=[
+    "-server",
+    "-Xmx4096m",
+    "-XX:+UseSerialGC"
+]
+
 [bot_misc]
 keypair_path="${DEFAULT_KEYPAIR_PATH}"
 protect_keypair=false
@@ -24,35 +32,36 @@ rpc_url="${DEFAULT_RPC_URL}"
 enabled=true
 update_seconds=5
 random_order=false
-path="example-mints.txt"
+path="mints.txt"
 
 [plugin]
-class="org.notarb.DefaultJito"
+class="org.notarb.DefaultSpam"
 include_paths=[]
 
-[[jito_rpc]]
+[[spam_rpc]]
 enabled=true
-url="https://slc.mainnet.block-engine.jito.wtf"
-identifier=1
-requests_per_second=1
-connections=5
+id="rpc1"
+url="${DEFAULT_RPC_URL}"
+workers=2
 connect_timeout_ms=5000
 request_timeout_ms=5000
-queue_timeout_ms=7500
-priority_queue=false
-always_queue=true
+idle_timeout_ms=10_000
 
-## SOL (Jito)
+## SOL
 [[swap]]
 enabled=true
 mint="SOL"
 
 [swap.strategy_defaults]
-cooldown_ms=10
+skip_profit_check=true
 
 [[swap.strategy]]
-enabled=true
+cooldown_ms=0
 min_spend=0.0001
 max_spend=0.03
-cu_limit=369_369
-static_tip_lamports=20_000
+cu_base=69_123
+cu_per_swap=89_456
+priority_fee_percent=0.01
+spam_senders=[
+    { rpc="rpc1", skip_preflight=false, max_retries=0 },
+]

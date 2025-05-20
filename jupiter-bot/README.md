@@ -2,9 +2,7 @@
 
 ## Overview
 
-This guide provides detailed instructions on configuring your NotArb bot using the provided configuration options.
-
-[View Example Configs](https://examples.notarb.org/)
+This guide provides detailed instructions on configuring your NotArb Jupiter Bot using the provided configuration options.
 
 ## Configuration Options
 

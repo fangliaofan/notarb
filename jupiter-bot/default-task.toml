@@ -1,8 +1,0 @@
-[launcher]
-task="jupiter-bot"
-config_file_path="example-config-jito.toml"
-jvm_args=[
-    "-server",
-    "-Xmx4096m",
-    "-XX:+UseSerialGC"
-]
