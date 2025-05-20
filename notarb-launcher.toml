@@ -1,0 +1,4 @@
+required_jvm_args=[
+    "--enable-preview",
+    "--add-exports=java.base/jdk.internal.util=ALL-UNNAMED"
+]

@@ -1,27 +1,18 @@
 #!/bin/bash
 
-# Move to the correct workdir to prevent path issues
-cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-task_config_path="$(pwd)/tasks/$*.toml"
+task=$*
 java_exe_path=""
 
 execute() {
-  if [ ! -f "$task_config_path" ]; then
-    echo "ERROR: Could not find task config file:"
-    echo "       $task_config_path"
-    exit 1
-  fi
-
   detect_or_install_java
 
-  exec $java_exe_path \
-    -Dcaller.dir="$(pwd)" \
-    -Djava.exe.path="$java_exe_path" \
-    -Dtask.config.path="$task_config_path" \
-    -cp "notarb-launcher.jar" org.notarb.launcher.Main
+  cmd=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
 
-  echo "NotArb exited with code $?"
+  if [[ "$cmd" == cmd=* ]]; then
+    exec "$java_exe_path" ${cmd#cmd=}
+  fi
 }
 
 detect_or_install_java() {
@@ -62,7 +53,7 @@ detect_or_install_java() {
     ;;
   esac
 
-  java_exe_path="$(pwd)/$java_exe_path"
+  java_exe_path="$script_dir/$java_exe_path"
 
   if [ -f "$java_exe_path" ]; then
     echo "$java_exe_path"
@@ -77,7 +68,7 @@ detect_or_install_java() {
   echo "$java_url"
 
   # Download and extract Java
-  temp_file="$(pwd)/java_download_temp.tar.gz"
+  temp_file="$script_dir/java_download_temp.tar.gz"
   download_file "$java_url" "$temp_file"
   tar -xzf "$temp_file"
   rm -f "$temp_file"
@@ -86,24 +77,24 @@ detect_or_install_java() {
   echo "$java_exe_path"
   "$java_exe_path" --version
   if [ $? -eq 0 ]; then
-      echo "Java installation successful!"
+    echo "Java installation successful!"
   else
-      echo "Warning: Java installation could not be verified!"
+    echo "Warning: Java installation could not be verified!"
   fi
 }
 
 download_file() {
-    local url="$1"
-    local output="$2"
+  local url="$1"
+  local output="$2"
 
-    if command -v wget >/dev/null 2>&1; then
-        wget -O "$output" "$url"
-    elif command -v curl >/dev/null 2>&1; then
-        curl -o "$output" "$url"
-    else
-        echo "Error: Neither wget nor curl is installed."
-        exit 1
-    fi
+  if command -v wget >/dev/null 2>&1; then
+    wget -O "$output" "$url"
+  elif command -v curl >/dev/null 2>&1; then
+    curl -o "$output" "$url"
+  else
+    echo "Error: Neither wget nor curl is installed."
+    exit 1
+  fi
 }
 
 execute

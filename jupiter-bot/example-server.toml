@@ -1,0 +1,4 @@
+[launcher]
+task="jupiter-server"
+config_file_path="" # optionally provide an alternate task config file, leave empty to use this file
+jvm_args=[]
