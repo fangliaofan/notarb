@@ -228,9 +228,9 @@ spam_max_opportunity_age_ms=100 # The maximum amount of time allowed from when t
 - `spam_senders`: A list of spam transaction senders, which consist of rpc, skip_preflight, and max_retries.
 - `spam_max_opportunity_age_ms`: The maximum amount of time allowed from when the opportunity was found.
 
-## Base Tokens
+## Swap Mints
 
-The following tokens can be used as base tokens:
+The following mints can be used as swap bases:
 
 | Symbol     | Address                                        |
 |:-----------|:-----------------------------------------------|
