@@ -1,3 +1,6 @@
+# Need help with configuration? Check out our complete guide:
+# https://github.com/NotArb/Release/tree/main/jupiter-server#readme
+
 [launcher]
 task="jupiter-server"
 jvm_args=[
