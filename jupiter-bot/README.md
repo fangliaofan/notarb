@@ -4,7 +4,7 @@
 
 This guide provides detailed instructions on configuring your NotArb Jupiter Bot using the provided configuration options.
 
-## Configuration Options
+## Configuration Options (OUTDATED)
 
 ```toml
 # Miscellaneous configuration (Required)
