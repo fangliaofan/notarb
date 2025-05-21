@@ -11,7 +11,7 @@ jvm_args=[
 
 [manager]
 jupiter_path="" # leave empty to auto install
-startup_cmd=["bash", "./startup-script.sh"] # optional, used to run a command before every start/restart.
+startup_cmd=["/bin/bash", "-c", "echo Example startup cmd!"] # optional, used to run a command before every start/restart.
 auto_restart_minutes=10 # set to 0 or remove this line to disable auto restarts (restarts on failure will still happen)
 
 [env]
