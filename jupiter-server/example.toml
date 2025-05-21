@@ -11,6 +11,7 @@ jvm_args=[
 
 [manager]
 jupiter_path="" # leave empty to auto install
+jupiter_release="v6.0.47" # the default release of jupiter to download if a path is not provided
 startup_cmd=["/bin/bash", "-c", "echo Example startup cmd!"] # optional, used to run a command before every start/restart.
 auto_restart_minutes=10 # set to 0 or remove this line to disable auto restarts (restarts on failure will still happen)
 
@@ -19,7 +20,7 @@ RUST_LOG="info"
 RUST_BACKTRACE="full"
 HOST="127.0.0.1"
 PORT="8080"
-RPC_URL=""
+RPC_URL="your.rpc.url"
 #YELLOWSTONE_GRPC_ENDPOINT=""
 #YELLOWSTONE_GRPC_X_TOKEN=""
 #YELLOWSTONE_GRPC_ENABLE_PING="true"
