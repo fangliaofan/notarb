@@ -8,10 +8,10 @@ java_exe_path=""
 execute() {
   detect_or_install_java
 
-  cmd=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
+  out=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
 
-  if [[ "$cmd" == cmd=* ]]; then
-    exec "$java_exe_path" ${cmd#cmd=}
+  if [[ "$out" == cmd=* ]]; then
+    exec "$java_exe_path" ${out#cmd=}
   fi
 }
 
@@ -56,7 +56,6 @@ detect_or_install_java() {
   java_exe_path="$script_dir/$java_exe_path"
 
   if [ -f "$java_exe_path" ]; then
-    echo "$java_exe_path"
     "$java_exe_path" --version
     if [ $? -eq 0 ]; then
       echo "Java installation not required."
@@ -74,7 +73,6 @@ detect_or_install_java() {
   rm -f "$temp_file"
 
   # Verify installed Java executable
-  echo "$java_exe_path"
   "$java_exe_path" --version
   if [ $? -eq 0 ]; then
     echo "Java installation successful!"
