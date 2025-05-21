@@ -1,4 +1,5 @@
 # NotArb
+MEOW
 
 [![](https://dcbadge.limes.pink/api/server/mYfAQnBfqy)](https://discord.notarb.org)
 
