@@ -2,7 +2,8 @@
 
 set "script_dir=%~dp0"
 
-set "task=%*"
+set "task_dir=%*"
+
 set "java_exe_path="
 
 call :execute
@@ -12,21 +13,18 @@ goto :eof
     call :detect_or_install_java
 
     set "script_dir_arg=%script_dir:\=/%"
-    set "task_arg=%task:\=/%"
+    set "task_dir_arg=%task_dir:\=/%"
+    set "args_file=%temp%\na_task_args_%random%.tmp"
 
-    set "temp_file=%temp%\notarb_launcher_out_%random%.tmp"
-
-    "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_arg%" > "%temp_file%" 2>&1
+    "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_dir_arg%" "%args_file%"
     if %errorlevel% == 0 (
-        for /f "delims=" %%i in ('type "%temp_file%" ^| findstr /r ".*"') do set "task_args=%%i"
-    ) else (
-        type "%temp_file%"
+        set /p args=<"%args_file%"
     )
 
-    del "%temp_file%"
+    del "%args_file%" 2>nul
 
-    if defined task_args (
-        "%java_exe_path%" %task_args%
+    if defined args (
+        "%java_exe_path%" %args%
     )
 exit /b
 

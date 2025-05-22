@@ -2,17 +2,25 @@
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-task=$*
+task_dir=$*
+
 java_exe_path=""
 
 execute() {
   detect_or_install_java
 
-  task_args=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
-  exit_code=$?
+  args_file=$(mktemp)
 
-  if [[ $exit_code -eq 0 ]]; then
-    exec "$java_exe_path" $task_args
+  "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task_dir" "$args_file"
+
+  if [[ $? -eq 0 ]]; then
+    args=$(cat "$args_file")
+  fi
+
+  rm -f "$args_file" || true
+
+  if [[ $args ]]; then
+    exec "$java_exe_path" $args
   fi
 }
 
