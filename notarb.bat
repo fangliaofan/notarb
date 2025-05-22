@@ -1,5 +1,4 @@
 @echo off
-setlocal enabledelayedexpansion
 
 set "script_dir=%~dp0"
 
@@ -12,25 +11,39 @@ goto :eof
 :execute
     call :detect_or_install_java
 
-    set "CMD="
+    set "script_dir_arg=%script_dir:\=/%"
+    set "task_arg=%task:\=/%"
 
-    powershell -Command "& {
-        $output = & \"%java_exe_path%\" -cp \"notarb-launcher.jar\" org.notarb.launcher.Main \"%script_dir%\" \"%task%\" 2>&1
-        $lastLine = $output | Select-Object -Last 1
+    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+        "$output = & '%java_exe_path%' -cp 'notarb-launcher.jar' org.notarb.launcher.Main '%script_dir_arg%' '%task_arg%' 2>&1;" ^
+        "if ($LASTEXITCODE -ne 0) {" ^
+        "    Write-Host $output -ForegroundColor Red;" ^
+        "} else {" ^
+        "    $lastLine = ($output | Out-String -Stream) | Select-Object -Last 1;" ^
+        "    if ($lastLine -like 'cmd=*') {" ^
+        "        $cmd = $lastLine.Substring(4).Trim();" ^
+        "        Invoke-Expression ('& \"%java_exe_path%\" ' + $cmd);" ^
+        "    } else {" ^
+        "        Write-Host 'Unknown Output: ' -ForegroundColor Red;" ^
+        "        Write-Host $lastLine -ForegroundColor Red;" ^
+        "    }" ^
+        "}"
+exit /b
 
-        if ($lastLine -like 'cmd=*') {
-            $env:CMD = $lastLine.Substring(4)
-            exit 0
-        } else {
-            foreach ($line in $output) {
-                Write-Host $line
-            }
-            exit 1
-        }
-    }"
+:execute
+    call :detect_or_install_java
 
-    if not errorlevel 1 (
-        "%java_exe_path%" %CMD%
+    set "script_dir_arg=%script_dir:\=/%"
+    set "task_arg=%task:\=/%"
+
+    set "temp_file=%temp%\notarb_launcher_out_%random%.tmp"
+
+    "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_arg%" > "%temp_file%" 2>&1
+
+    if %errorlevel% equ 0 (
+        rem Get the last line from the temp file using a simple approach
+        for /f "tokens=*" %%i in ("%temp_file%") do set "out=%%i"
+        call :get_last_line "%temp_file%"
     )
 exit /b
 
@@ -42,25 +55,22 @@ exit /b
 
     if exist "%java_exe_path%" (
         "%java_exe_path%" --version
-        if !errorlevel! == 0 (
+        if %errorlevel% == 0 (
             echo Java installation not required.
             exit /b
         )
     )
 
-    echo Installing Java, please wait...
-    echo.
-    echo.
+    echo Installing Java, please wait... & echo. & echo.
 
-    powershell -Command "
-        $tempFile = Join-Path \"%script_dir%\" \"java_download_temp.zip\"
-        Invoke-WebRequest -Uri '%java_url%' -OutFile $tempFile
-        Expand-Archive -Path $tempFile -DestinationPath \"%script_dir%\" -Force
-        Remove-Item -Force $tempFile
-    "
+    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+        "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^
+        "Invoke-WebRequest -Uri '%java_url%' -OutFile $tempFile;" ^
+        "Expand-Archive -Path $tempFile -DestinationPath '%script_dir%' -Force;" ^
+        "Remove-Item -Force $tempFile;"
 
     "%java_exe_path%" --version
-    if !errorlevel! == 0 (
+    if %errorlevel% == 0 (
         echo Java installation successful!
     ) else (
         echo Warning: Java installation could not be verified!

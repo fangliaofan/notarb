@@ -9,9 +9,10 @@ execute() {
   detect_or_install_java
 
   out=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
+  exit_code=$?
 
-  if [[ "$out" == cmd=* ]]; then
-    exec "$java_exe_path" ${out#cmd=}
+  if [[ $exit_code -eq 0 ]]; then
+    exec "$java_exe_path" $out
   fi
 }
 
