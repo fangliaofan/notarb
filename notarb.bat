@@ -3,6 +3,10 @@
 set "script_dir=%~dp0"
 set "task_dir=%*"
 
+:: Install Java
+
+echo.
+
 set "java_url=https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_windows-x64_bin.zip"
 set "java_folder=jdk-24.0.1"
 set "java_exe_path=%script_dir%%java_folder%\bin\java.exe"
@@ -13,9 +17,11 @@ if exist "%java_exe_path%" (
         echo Java installation not required.
         goto :launch
     )
+    echo Java exists but could not be ran, reinstalling...
+) else (
+    echo Installing Java, please wait...
 )
 
-echo Installing Java, please wait...
 echo "%java_url%"
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
@@ -27,7 +33,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "Remove-Item -Force $tempFile;" ^
     "Write-Host 'Java installation finished.'"
 
-echo. & echo.
+echo.
 echo Verifying java installation...
 "%java_exe_path%" --version
 if not errorlevel 1 (
@@ -36,8 +42,10 @@ if not errorlevel 1 (
     echo Warning: Java installation could not be verified!
 )
 
+:: Launch
+
 :launch
-echo. & echo.
+echo.
 set "script_dir_arg=%script_dir:\=/%"
 set "task_dir_arg=%task_dir:\=/%"
 set "args_file=%temp%\na_task_args_%random%.tmp"

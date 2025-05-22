@@ -6,26 +6,9 @@ task_dir=$*
 
 java_exe_path=""
 
-run() {
-  detect_or_install_java
-  echo & echo
+install_java() {
+  echo
 
-  args_file=$(mktemp)
-
-  "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task_dir" "$args_file"
-
-  if [[ $? -eq 0 ]]; then
-    args=$(cat "$args_file")
-  fi
-
-  rm -f "$args_file" || true
-
-  if [[ $args ]]; then
-    exec "$java_exe_path" $args
-  fi
-}
-
-detect_or_install_java() {
   kernel=$(uname -s | tr '[:upper:]' '[:lower:]')
 
   if [[ "$kernel" == *"linux"* ]]; then
@@ -71,9 +54,11 @@ detect_or_install_java() {
       echo "Java installation not required."
       return
     fi
+    echo "Java exists but could not be ran, reinstalling..."
+  else
+    echo "Installing Java, please wait..."
   fi
 
-  echo "Installing Java, please wait..."
   echo "$java_url"
 
   # Download and extract Java
@@ -83,6 +68,7 @@ detect_or_install_java() {
   rm -f "$temp_file"
 
   # Verify installed Java executable
+  echo
   echo "Verifying Java installation..."
   "$java_exe_path" --version
   if [ $? -eq 0 ]; then
@@ -106,4 +92,23 @@ download_file() {
   fi
 }
 
-run
+launch() {
+  echo
+
+  args_file=$(mktemp)
+
+  "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task_dir" "$args_file"
+
+  if [[ $? -eq 0 ]]; then
+    args=$(cat "$args_file")
+  fi
+
+  rm -f "$args_file" || true
+
+  if [[ $args ]]; then
+    exec "$java_exe_path" $args
+  fi
+}
+
+install_java
+launch
