@@ -22,7 +22,7 @@ if exist "%java_exe_path%" (
     echo Installing Java, please wait...
 )
 
-echo "%java_url%"
+echo %java_url%
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^
