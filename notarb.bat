@@ -15,22 +15,29 @@ if exist "%java_exe_path%" (
     )
 )
 
-echo. & echo.
 echo Installing Java, please wait...
-echo. & echo.
+echo "%java_url%"
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^
     "Invoke-WebRequest -Uri '%java_url%' -OutFile $tempFile;" ^
+    "Write-Host 'Download complete, extracting...'; " ^
     "Expand-Archive -Path $tempFile -DestinationPath '%script_dir%' -Force;" ^
-    "Remove-Item -Force $tempFile;"
+    "Write-Host 'Extraction complete, cleaning up...'; " ^
+    "Remove-Item -Force $tempFile;" ^
+    "Write-Host 'Java installation finished.'"
 
+echo. & echo.
+echo Verifying java installation...
 "%java_exe_path%" --version
-if errorlevel 1 (
+if not errorlevel 1 (
+    echo Java installation successful!
+) else (
     echo Warning: Java installation could not be verified!
 )
 
 :launch
+echo. & echo.
 set "script_dir_arg=%script_dir:\=/%"
 set "task_dir_arg=%task_dir:\=/%"
 set "args_file=%temp%\na_task_args_%random%.tmp"

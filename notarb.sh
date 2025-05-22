@@ -8,6 +8,7 @@ java_exe_path=""
 
 run() {
   detect_or_install_java
+  echo & echo
 
   args_file=$(mktemp)
 
@@ -82,6 +83,7 @@ detect_or_install_java() {
   rm -f "$temp_file"
 
   # Verify installed Java executable
+  echo "Verifying Java installation..."
   "$java_exe_path" --version
   if [ $? -eq 0 ]; then
     echo "Java installation successful!"
