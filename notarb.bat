@@ -14,36 +14,19 @@ goto :eof
     set "script_dir_arg=%script_dir:\=/%"
     set "task_arg=%task:\=/%"
 
-    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-        "$output = & '%java_exe_path%' -cp 'notarb-launcher.jar' org.notarb.launcher.Main '%script_dir_arg%' '%task_arg%' 2>&1;" ^
-        "if ($LASTEXITCODE -ne 0) {" ^
-        "    Write-Host $output -ForegroundColor Red;" ^
-        "} else {" ^
-        "    $lastLine = ($output | Out-String -Stream) | Select-Object -Last 1;" ^
-        "    if ($lastLine -like 'cmd=*') {" ^
-        "        $cmd = $lastLine.Substring(4).Trim();" ^
-        "        Invoke-Expression ('& \"%java_exe_path%\" ' + $cmd);" ^
-        "    } else {" ^
-        "        Write-Host 'Unknown Output: ' -ForegroundColor Red;" ^
-        "        Write-Host $lastLine -ForegroundColor Red;" ^
-        "    }" ^
-        "}"
-exit /b
-
-:execute
-    call :detect_or_install_java
-
-    set "script_dir_arg=%script_dir:\=/%"
-    set "task_arg=%task:\=/%"
-
     set "temp_file=%temp%\notarb_launcher_out_%random%.tmp"
 
     "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_arg%" > "%temp_file%" 2>&1
+    if %errorlevel% == 0 (
+        for /f "delims=" %%i in ('type "%temp_file%" ^| findstr /r ".*"') do set "task_args=%%i"
+    ) else (
+        type "%temp_file%"
+    )
 
-    if %errorlevel% equ 0 (
-        rem Get the last line from the temp file using a simple approach
-        for /f "tokens=*" %%i in ("%temp_file%") do set "out=%%i"
-        call :get_last_line "%temp_file%"
+    del "%temp_file%"
+
+    if defined task_args (
+        "%java_exe_path%" %task_args%
     )
 exit /b
 
@@ -61,7 +44,9 @@ exit /b
         )
     )
 
-    echo Installing Java, please wait... & echo. & echo.
+    echo. & echo.
+    echo Installing Java, please wait...
+    echo. & echo.
 
     powershell -NoProfile -ExecutionPolicy Bypass -Command ^
         "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^

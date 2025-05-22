@@ -8,11 +8,11 @@ java_exe_path=""
 execute() {
   detect_or_install_java
 
-  out=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
+  task_args=$(exec "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task" | tail -n 1)
   exit_code=$?
 
   if [[ $exit_code -eq 0 ]]; then
-    exec "$java_exe_path" $out
+    exec "$java_exe_path" $task_args
   fi
 }
 
