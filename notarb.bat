@@ -1,61 +1,45 @@
 @echo off
 
 set "script_dir=%~dp0"
-
 set "task_dir=%*"
 
-set "java_exe_path="
+set "java_url=https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_windows-x64_bin.zip"
+set "java_folder=jdk-24.0.1"
+set "java_exe_path=%script_dir%%java_folder%\bin\java.exe"
 
-call :execute
-goto :eof
-
-:execute
-    call :detect_or_install_java
-
-    set "script_dir_arg=%script_dir:\=/%"
-    set "task_dir_arg=%task_dir:\=/%"
-    set "args_file=%temp%\na_task_args_%random%.tmp"
-
-    "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_dir_arg%" "%args_file%"
-    if %errorlevel% == 0 (
-        set /p args=<"%args_file%"
-    )
-
-    del "%args_file%" 2>nul
-
-    if defined args (
-        "%java_exe_path%" %args%
-    )
-exit /b
-
-:detect_or_install_java
-    set "java_url=https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_windows-x64_bin.zip"
-    set "java_folder=jdk-24.0.1"
-
-    set "java_exe_path=%script_dir%%java_folder%\bin\java.exe"
-
-    if exist "%java_exe_path%" (
-        "%java_exe_path%" --version
-        if %errorlevel% == 0 (
-            echo Java installation not required.
-            exit /b
-        )
-    )
-
-    echo. & echo.
-    echo Installing Java, please wait...
-    echo. & echo.
-
-    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-        "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^
-        "Invoke-WebRequest -Uri '%java_url%' -OutFile $tempFile;" ^
-        "Expand-Archive -Path $tempFile -DestinationPath '%script_dir%' -Force;" ^
-        "Remove-Item -Force $tempFile;"
-
+if exist "%java_exe_path%" (
     "%java_exe_path%" --version
-    if %errorlevel% == 0 (
-        echo Java installation successful!
-    ) else (
-        echo Warning: Java installation could not be verified!
+    if not errorlevel 1 (
+        echo Java installation not required.
+        goto :launch
     )
-exit /b
+)
+
+echo. & echo.
+echo Installing Java, please wait...
+echo. & echo.
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$tempFile = Join-Path '%script_dir%' 'java_download_temp.zip';" ^
+    "Invoke-WebRequest -Uri '%java_url%' -OutFile $tempFile;" ^
+    "Expand-Archive -Path $tempFile -DestinationPath '%script_dir%' -Force;" ^
+    "Remove-Item -Force $tempFile;"
+
+"%java_exe_path%" --version
+if errorlevel 1 (
+    echo Warning: Java installation could not be verified!
+)
+
+:launch
+set "script_dir_arg=%script_dir:\=/%"
+set "task_dir_arg=%task_dir:\=/%"
+set "args_file=%temp%\na_task_args_%random%.tmp"
+
+"%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main "%script_dir_arg%" "%task_dir_arg%" "%args_file%"
+if not errorlevel 1 (
+    set /p args=<"%args_file%"
+    del "%args_file%" 2>nul
+    call "%java_exe_path%" %%args%%
+) else (
+    del "%args_file%" 2>nul
+)

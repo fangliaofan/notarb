@@ -6,7 +6,7 @@ task_dir=$*
 
 java_exe_path=""
 
-execute() {
+run() {
   detect_or_install_java
 
   args_file=$(mktemp)
@@ -104,4 +104,4 @@ download_file() {
   fi
 }
 
-execute
+run
