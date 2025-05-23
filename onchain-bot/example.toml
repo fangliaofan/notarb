@@ -1,4 +1,61 @@
 # Need help with configuration? Check out our complete guide:
-# https://github.com/NotArb/Release/tree/main/jupiter-bot#readme
+# https://github.com/NotArb/Release/tree/main/onchain-bot#readme
 
-# TODO
+[launcher]
+task="onchain-bot"
+jvm_args=[
+    "-server",
+    "-Xmx4096m"
+]
+
+[notarb]
+acknowledge_terms_of_service=false
+
+[user]
+keypair_path="${DEFAULT_KEYPAIR_PATH}"
+protect_keypair=false
+
+[token_accounts_checker]
+rpc_url="${DEFAULT_RPC_URL}"
+delay_seconds=3
+
+[blockhash_updater]
+rpc_url="${DEFAULT_RPC_URL}"
+delay_seconds=3
+
+[market_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+
+[transaction_executor]
+threads=0 # 0 will use a cached thread pool, -1 will use a thread per task, anything > 0 will use a fixed thread pool
+
+[[spam_rpc]]
+id="my-super-duper-sender"
+url="${DEFAULT_RPC_URL}"
+max_idle_connections=1
+
+[[markets_file]]
+enabled=true
+path="markets.toml" # also supports json, but must be a 2d array of market addresses
+update_seconds=3
+
+[[markets_url]]
+enabled=false
+url="https://notarb.org/markets.toml" # also supports json, but must be a 2d array of market addresses
+update_seconds=3
+
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
+spam_senders=[
+    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
+]
+meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
+
+[[swap.strategy]]
+cu_limit=369_369
+min_priority_fee_lamports=1900
+max_priority_fee_lamports=6900
+cooldown_ms=369
