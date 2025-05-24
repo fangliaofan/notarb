@@ -9,12 +9,12 @@ jvm_args=[
     "-XX:+UseSerialGC"
 ]
 
-[bot_misc]
+[notarb]
+acknowledge_terms_of_service=false
+
+[user]
 keypair_path="${DEFAULT_KEYPAIR_PATH}"
 protect_keypair=false
-acknowledge_terms_of_service=false
-acknowledge_external_price_risk=false
-acknowledge_experimental_release=false
 
 [jupiter]
 url="http://127.0.0.1:8080"
