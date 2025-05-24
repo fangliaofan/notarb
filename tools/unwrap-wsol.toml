@@ -7,6 +7,6 @@ keypair_paths=[
     "${DEFAULT_KEYPAIR_PATH}"
 ]
 blockhash_rpc_url="${DEFAULT_RPC_URL}"
-senders=[
-    { rpc_url="${DEFAULT_RPC_URL}", skip_preflight=true, max_retries=0 }
+send_rpc_urls=[
+    "${DEFAULT_RPC_URL}"
 ]
