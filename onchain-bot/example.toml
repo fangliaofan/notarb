@@ -27,7 +27,7 @@ delay_seconds=3
 rpc_url="${DEFAULT_RPC_URL}"
 
 [transaction_executor]
-threads=0 # 0 will use a cached thread pool, -1 will use a thread per task, anything > 0 will use a fixed thread pool
+threads=4 # 0 will use a dynamic cached thread pool, -1 will use a thread per task, anything > 0 will use a fixed thread pool
 
 [[spam_rpc]]
 id="my-super-duper-sender"
