@@ -1,6 +1,7 @@
 # 🚀 NotArb Jupiter Bot Configuration Guide
 
 ![GitHub release](https://img.shields.io/github/v/release/NotArb/Release)
+
 [![Join Discord](https://dcbadge.limes.pink/api/server/mYfAQnBfqy)](https://discord.notarb.org)
 
 > **Complete technical reference for NotArb Jupiter Bot configuration**  
