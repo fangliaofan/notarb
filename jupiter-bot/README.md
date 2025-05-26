@@ -109,7 +109,7 @@ notarb.bat jupiter-bot\myspam.toml
 
 ```toml
 [bot_misc]
-keypair_path = "/path/to/keypair.json"  # Required
+keypair_path = "${DEFAULT_KEYPAIR_PATH}"  # Uses path from notarb-global.toml
 protect_keypair = true                 # Recommended
 acknowledge_terms_of_service = false   # Must set true
 
@@ -124,21 +124,21 @@ request_timeout_ms = 5000
 
 #### [blockhash_fetcher]
 **Purpose**: Fetches recent blockhashes required for transaction processing
-**Recommendation**: Use a reliable RPC endpoint with low latency
+**Recommendation**: Use "${DEFAULT_RPC_URL}" to use DEFAULT_RPC_URL from notarb-global.toml
 
 ```toml
 [blockhash_fetcher]
-rpc_url = "http://your.rpc:8899/"  # Replace with your RPC endpoint
+rpc_url = "${DEFAULT_RPC_URL}"  # Replace with your RPC endpoint
 ```
 
 #### [token_accounts_fetcher]
 **Purpose**: Checks which token accounts your wallet already has open  
 **Why it's needed**: Speeds up transaction building by avoiding redundant account checks  
-**Recommendation**: Use a reliable RPC endpoint with low latency
+**Recommendation**: Use "${DEFAULT_RPC_URL}" to use DEFAULT_RPC_URL from notarb-global.toml
 
 ```toml
 [token_accounts_fetcher]
-rpc_url = "http://your.rpc:8899/"
+rpc_url = "${DEFAULT_RPC_URL}"
 ```
 
 #### [plugin]
@@ -324,38 +324,38 @@ mint_exclude_tags = [ ["scam"], ["experimental", "volatile"] ]
 ##### [[jito_unbound_grpc]] Example
 ```toml
 [[jito_unbound_grpc]]
-threads = -1
+enabled=false
+threads=0 # 0 will default to a shared "common" pool, -1 will use an unbound cached thread pool
+targets=[
+    { host="https://slc.mainnet.block-engine.jito.wtf", identifier=1 },
+    { host="https://ny.mainnet.block-engine.jito.wtf", identifier=2 },
+    { host="https://london.mainnet.block-engine.jito.wtf", identifier=3 },
+]
+ips_file_path="/path/to/bind-ips-or-proxies.txt"
+ips_skip_count=4 # skip the first N ips (optional, defaults to 0)
+#ips_load_count=999 # load the next M IPs (optional, defaults to all)
+
+proxy_keypairs_path="/path/to/prefunded-wallets.txt"
+
 connect_timeout_ms = 5000
 request_timeout_ms = 5000
-ips_file_path = "/home/notarb/bind-ips.txt"
-ips_skip_count = 0
-ips_load_count = 999
-proxy_keypairs_path = "/home/notarb/tip-wallets.txt"
-
-targets = [
-    { host = "https://slc.mainnet.block-engine.jito.wtf", identifier = 1 },
-    { host = "https://ny.mainnet.block-engine.jito.wtf", identifier = 2 },
-    { host = "https://london.mainnet.block-engine.jito.wtf", identifier = 3 },
-    { host = "https://frankfurt.mainnet.block-engine.jito.wtf", identifier = 4 },
-    { host = "https://amsterdam.mainnet.block-engine.jito.wtf", identifier = 5 },
-    { host = "https://tokyo.mainnet.block-engine.jito.wtf", identifier = 6 }
-]
 ```
 
-##### [[jito_rpc]] Example
+##### [[jito_rpc]] Jito UUID EXAMPLE
 ```toml
 [[jito_rpc]]
-enabled = true
-url = "https://frankfurt.mainnet.block-engine.jito.wtf"
-identifier = 9
-uuid = "jito-uuid-here"
-requests_per_second = 10
-connections = 13
+enabled=true
+url="https://frankfurt.mainnet.block-engine.jito.wtf"
+identifier=1
+uuid="your-uuid-here"
+requests_per_second=10
+connections=10 # warning: too many connections can slow down sending due to idle connections timing out
 connect_timeout_ms = 5000
 request_timeout_ms = 5000
-queue_timeout_ms = 1000
-priority_queue = true
-always_queue = false
+queue_timeout_ms=1000
+priority_queue=true
+always_queue=false
+
 ```
 
 ##### Dynamic Tipping Examples
@@ -410,12 +410,11 @@ yield_workers = 1   # Yields to other threads when idle (medium CPU, moderate la
 
 ```
 
-
 ---
 
 ## 📚 Complete Examples
 
-### Jito Configuration
+### Jito Example: Full Unbound GRPC Configuration
 ```toml
 [bot_misc]
 keypair_path="/path/to/keypair.json" # required for signing transactions
@@ -431,10 +430,10 @@ connect_timeout_ms=5000
 request_timeout_ms=5000
 
 [blockhash_fetcher]
-rpc_url="http://111.222.333.69:8899/"
+rpc_url="${DEFAULT_RPC_URL}"
 
 [token_accounts_fetcher] # not required but encouraged
-rpc_url="http://111.222.333.69:8899/"
+rpc_url="${DEFAULT_RPC_URL}"
 
 [[file_mints]]
 enabled=true
@@ -445,18 +444,22 @@ path="/path/to/mints.txt"
 class="org.notarb.DefaultJito"
 
 [[jito_unbound_grpc]]
-url="https://slc.mainnet.block-engine.jito.wtf"
-bind_ips=[
-    #"123.456.789.10/25", # cidr ranges supported
-    "127.0.0.1", # this will use your default ip instead of binding
+enabled=false
+threads=0 # 0 will default to a shared "common" pool, -1 will use an unbound cached thread pool
+targets=[
+    { host="https://slc.mainnet.block-engine.jito.wtf", identifier=1 },
+    { host="https://ny.mainnet.block-engine.jito.wtf", identifier=2 },
+    { host="https://london.mainnet.block-engine.jito.wtf", identifier=3 },
 ]
+ips_file_path="/path/to/bind-ips-or-proxies.txt"
+ips_skip_count=4 # skip the first N ips (optional, defaults to 0)
+#ips_load_count=999 # load the next M IPs (optional, defaults to all)
 
-# Misc http options
+proxy_keypairs_path="/path/to/prefunded-wallets.txt"
+
 connect_timeout_ms = 5000
 request_timeout_ms = 5000
-idle_timeout_ms = 10_000
 
-## SOL (Jito)
 [[swap]]
 enabled=true
 mint="SOL"
@@ -490,7 +493,7 @@ min_gain_lamports=20_000
 static_tip_lamports=6900
 ```
 
-### Spam Configuration
+### Spam Example Full Configuration
 ```toml
 [bot_misc]
 keypair_path="/path/to/keypair.json" # required for signing transactions
