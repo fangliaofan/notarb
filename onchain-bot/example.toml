@@ -26,6 +26,9 @@ delay_seconds=3
 [market_loader]
 rpc_url="${DEFAULT_RPC_URL}"
 
+[lookup_table_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+
 [transaction_executor]
 threads=4 # 0 will use a dynamic cached thread pool, -1 will use a thread per task, anything > 0 will use a fixed thread pool
 
@@ -41,7 +44,17 @@ update_seconds=3
 
 [[markets_url]]
 enabled=false
-url="https://notarb.org/markets.toml" # also supports json, but must be a 2d array of market addresses
+url="https://notarb.org/markets.json" # also supports json, but must be a 2d array of market addresses
+update_seconds=3
+
+[[lookup_tables_file]]
+enabled=true
+path="lookup-tables.txt" # also supports json, but must be 1d array of market addresses
+update_seconds=3
+
+[[lookup_tables_url]]
+enabled=false
+path="https://notarb.org/lups.json" # also supports json, but must be 1d array of market addresses
 update_seconds=3
 
 [[swap]]
