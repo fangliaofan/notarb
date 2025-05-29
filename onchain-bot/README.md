@@ -11,22 +11,30 @@
 ---
 
 ## 📋 Table of Contents
+
 1. [✨ Quick Start](#-quick-start)
    - [For Linux/Mac](#for-linuxmac)
    - [For Windows](#for-windows)
 2. [⚙️ Core Configuration](#️-core-configuration)
-   - [Essential Services](#essential-services)
-3. [🔄 Market Configuration](#-market-configuration)
+   - [🔗 On-Chain Specific Variables](#-on-chain-specific-variables)
+   - [🧠 Jito](#-jito-variables)
+   - [🌀 Spam](#-spam-variables)
+3. [🔧 Essential Services](#essential-services)
+4. [🔄 Market Configuration](#-market-configuration)
    - [File-based Markets](#file-based-markets)
    - [URL-based Markets](#url-based-markets)
-4. [🔍 Lookup Tables](#-lookup-tables)
-5. [⚡ Transaction Execution](#-transaction-execution)
-6. [🎯 Strategy Configuration](#-strategy-configuration)
-   - [Jito Mode](#jito-mode)
-   - [Spam Mode](#spam-mode)
-7. [📚 Complete Examples](#-complete-examples)
-   - [Jito Configuration](#jito-configuration-example)
-   - [Spam Configuration](#spam-configuration-example)
+5. [🔍 Lookup Tables](#-lookup-tables)
+   - [File-based](#file-based)
+   - [URL-based](#url-based)
+6. [⚡ Transaction Execution](#-transaction-execution)
+7. [🎯 Strategy Configuration](#-strategy-configuration)
+   - [🧠 Jito Mode](#-jito-mode)
+   - [🌀 Spam Mode](#-spam-mode)
+8. [📚 Complete Examples](#-complete-examples)
+   - [✅ Jito Configuration](#-jito-configuration)
+   - [✅ Spam Configuration](#-spam-configuration)
+   - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
+9. [🔗 Official Links](#-official-links)
 
 ---
 
@@ -107,24 +115,23 @@ keypair_path="${DEFAULT_KEYPAIR_PATH}"
 protect_keypair=true
 ```
 
-### `[swap.strategy_defaults]`
+### 🔗 On-Chain Specific Variables
 
 | Field               | Type   | Description                                                                 |
 |---------------------|--------|-----------------------------------------------------------------------------|
 | meteora_bin_limit   | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
 | prefer_success      | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
 | no_fail_mode        | bool   | When `true`, forces all Jito transactions to be landed, even if they fail   |
+| `cu_limit`          | int    | Compute unit cap per transaction.                                           |
 
 ### 🧠 Jito Variables
 
 | Field                    | Type   | Description                                                                 |
 |--------------------------|--------|-----------------------------------------------------------------------------|
-| `prefer_success`         | bool   | When `true` and using Jito, transactions will always land successfully unless doing so would cause you to lose arb tokens. |
-| `meteora_bin_limit`      | int    | Maximum number of bins considered for Meteora swaps.                        |
-| `cu_limit`               | int    | Compute unit cap per transaction.                                           |
 | `min_jito_tip_lamports`  | int    | Minimum Jito tip in lamports per transaction.                               |
 | `max_jito_tip_lamports`  | int    | Maximum Jito tip in lamports per transaction.                               |
-| `no_fail_mode`           | bool   | When `true`, sends all Jito-bound transactions regardless of expected result. |
+| `exclude_jito_senders`| array   | List of `jito.rpc_proxy` or `jito.rpc` `id`s to exclude from sending          |
+
 
 ### 🌀 Spam Variables
 
@@ -253,7 +260,6 @@ mint="SOL"
 [swap.strategy_defaults]
 meteora_bin_limit=20
 prefer_success=true
-no_fail_mode=false
 
 [[swap.strategy]]
 cu_limit=360000
@@ -353,13 +359,13 @@ mint="SOL"
 [swap.strategy_defaults]
 meteora_bin_limit=20
 prefer_success=true
-no_fail_mode=false
 
 [[swap.strategy]]
 cu_limit=360000
 min_jito_tip_lamports=1001
 max_jito_tip_lamports=1111
 cooldown_ms=1000
+#exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
 ```
 
 ---
@@ -434,11 +440,123 @@ spam_senders=[
 ```
 
 ---
+---
+
+### ✅ Jito + Spam Full Example
+
+```toml
+
+[launcher]
+task="onchain-bot"
+jvm_args=[
+    "-server",
+    "-Xmx4096m"
+]
+
+[notarb]
+acknowledge_terms_of_service=false
+
+[user]
+keypair_path="${DEFAULT_KEYPAIR_PATH}"
+protect_keypair=false
+
+[token_accounts_checker]
+rpc_url="${DEFAULT_RPC_URL}"
+delay_seconds=3
+
+[blockhash_updater]
+rpc_url="${DEFAULT_RPC_URL}"
+delay_seconds=3
+
+[market_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+
+[lookup_table_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+
+[transaction_executor]
+threads=4 # 0 will use a dynamic cached thread pool, -1 will use a thread per task, anything > 0 will use a fixed thread pool
+
+[[spam_rpc]]
+id="my-super-duper-sender"
+url="${DEFAULT_RPC_URL}"
+max_idle_connections=1
+
+[jito]
+ips_file_path="" # required for proxy senders (.txt file with 1 ip/proxy per line)
+prefunded_keypairs_path="" # optional - only for proxy senders (.txt file with 1 keypair per line)
+
+[[jito.rpc]]
+enabled=true
+id="jito-1"
+uuid="" # leave empty if you have none - use cautiously, sends are not automatically rate limited like the jupiter bot
+regions=["ny", "slc", "london", "frankfurt", "amsterdam", "tokyo"] # each region will be sent to concurrently
+
+[[jito.rpc_proxy]]
+enabled=false
+id="jito-2"
+regions=["ny", "slc", "london", "frankfurt", "amsterdam", "tokyo"]
+
+[[markets_file]]
+enabled=true
+path="markets.toml" # also supports json, but must be a 2d array of market addresses
+update_seconds=3
+
+[[markets_url]]
+enabled=false
+url="https://notarb.org/markets.json" # also supports json, but must be a 2d array of market addresses
+update_seconds=3
+
+[[lookup_tables_file]]
+enabled=true
+path="lookup-tables.txt" # also supports json, but must be 1d array of market addresses
+update_seconds=3
+
+[[lookup_tables_url]]
+enabled=false
+path="https://notarb.org/lups.json" # also supports json, but must be 1d array of market addresses
+update_seconds=3
+
+## SOL (Jito)
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
+meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
+
+[[swap.strategy]]
+cu_limit=369_369
+min_jito_tip_lamports=1000
+max_jito_tip_lamports=1000
+prefer_success=false # warning: setting this to true will land txs and pay Jito tips even if there's no arbitrage opportunity.
+cooldown_ms=1337
+#exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
+
+## SOL (Spam)
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
+meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
+
+[[swap.strategy]]
+cu_limit=369_369
+min_priority_fee_lamports=1900
+max_priority_fee_lamports=6900
+spam_senders=[
+    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
+]
+cooldown_ms=369
+```
+---
+
+> ⚠️ Always download from official sources. Never accept programs or scripts from other users.
 
 ## 🔗 Official Links
 
 - 📦 [Download NotArb](https://github.com/NotArb/Release/releases/)
-- 📊 Dune Dashboard *(Coming Soon)*
+- 📊 [Dune Dashboard](https://dune.notarb.org/)
 - 💬 [Join Discord](https://discord.notarb.org)
 
-> ⚠️ Always download from official sources and use dedicated wallets for trading.
