@@ -37,6 +37,21 @@ id="my-super-duper-sender"
 url="${DEFAULT_RPC_URL}"
 max_idle_connections=1
 
+[jito]
+ips_file_path="" # required for proxy senders (.txt file with 1 ip/proxy per line)
+prefunded_keypairs_path="" # optional - only for proxy senders (.txt file with 1 keypair per line)
+
+[[jito.rpc]]
+enabled=true
+id="jito-1"
+uuid="" # leave empty if you have none - use cautiously, sends are not automatically rate limited like the jupiter bot
+regions=["ny", "slc", "london", "frankfurt", "amsterdam", "tokyo"] # each region will be sent to concurrently
+
+[[jito.rpc_proxy]]
+enabled=false
+id="jito-2"
+regions=["ny", "slc", "london", "frankfurt", "amsterdam", "tokyo"]
+
 [[markets_file]]
 enabled=true
 path="markets.toml" # also supports json, but must be a 2d array of market addresses
@@ -57,18 +72,37 @@ enabled=false
 path="https://notarb.org/lups.json" # also supports json, but must be 1d array of market addresses
 update_seconds=3
 
+
+## SOL (Jito)
 [[swap]]
 enabled=true
 mint="SOL"
 
 [swap.strategy_defaults]
-spam_senders=[
-    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
-]
+meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
+
+[[swap.strategy]]
+cu_limit=369_369
+min_jito_tip_lamports=1000
+max_jito_tip_lamports=1000
+prefer_success=false # warning: setting this to true will land txs any pay Jito tips even if there's no arbitrage opportunity.
+cooldown_ms=1337
+#exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
+
+
+## SOL (Spam)
+[[swap]]
+enabled=true
+mint="SOL"
+
+[swap.strategy_defaults]
 meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
 
 [[swap.strategy]]
 cu_limit=369_369
 min_priority_fee_lamports=1900
 max_priority_fee_lamports=6900
+spam_senders=[
+    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
+]
 cooldown_ms=369
