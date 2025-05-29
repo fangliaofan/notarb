@@ -5,8 +5,8 @@
 
 [![Join Discord](https://dcbadge.limes.pink/api/server/mYfAQnBfqy)](https://discord.notarb.org)
 
-> **Complete technical reference for NotArb On Chain Bot configuration**  
-> *Includes all fields with exact specifications and examples for both Jito and Spam modes*
+> **Complete technical reference guide for the NotArb On-Chain Bot**  
+> *Exact specifications each parameters with examples for both Jito and Spam*
 
 ---
 
@@ -79,8 +79,8 @@ notarb.bat myconfig.toml
 
 | Field     | Type      | Description                      |
 |-----------|-----------|----------------------------------|
-| task      | string    | Must be `"onchain-bot"`          |
-| jvm_args  | string[]  | JVM arguments for optimization   |
+| `task`      | string    | Must be `"onchain-bot"`          |
+| `jvm_args`  | string[]  | JVM arguments for optimization   |
 
 ```toml
 [launcher]
@@ -95,7 +95,7 @@ jvm_args=[
 
 | Field                         | Type  | Description                 |
 |------------------------------|-------|-----------------------------|
-| acknowledge_terms_of_service | bool  | Must be `true` to run       |
+| `acknowledge_terms_of_service` | bool  | Must be `true` to run       |
 
 ```toml
 [notarb]
@@ -106,8 +106,8 @@ acknowledge_terms_of_service=true
 
 | Field         | Type    | Description                                  |
 |---------------|---------|----------------------------------------------|
-| keypair_path  | string  | Path to wallet keypair                       |
-| protect_keypair | bool | Extra security for keypair                   |
+| `keypair_path`  | string  | Path to wallet keypair                       |
+| `protect_keypair` | bool | Extra security for keypair                   |
 
 ```toml
 [user]
@@ -119,9 +119,8 @@ protect_keypair=true
 
 | Field               | Type   | Description                                                                 |
 |---------------------|--------|-----------------------------------------------------------------------------|
-| meteora_bin_limit   | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
-| prefer_success      | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
-| no_fail_mode        | bool   | When `true`, forces all Jito transactions to be landed, even if they fail   |
+| `meteora_bin_limit` | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
+| `prefer_success`    | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
 | `cu_limit`          | int    | Compute unit cap per transaction.                                           |
 
 ### 🧠 Jito Variables
@@ -130,7 +129,7 @@ protect_keypair=true
 |--------------------------|--------|-----------------------------------------------------------------------------|
 | `min_jito_tip_lamports`  | int    | Minimum Jito tip in lamports per transaction.                               |
 | `max_jito_tip_lamports`  | int    | Maximum Jito tip in lamports per transaction.                               |
-| `exclude_jito_senders`| array   | List of `jito.rpc_proxy` or `jito.rpc` `id`s to exclude from sending          |
+| `exclude_jito_senders`   | array   | List of `jito.rpc_proxy` or `jito.rpc` `id`s to exclude from sending       |
 
 
 ### 🌀 Spam Variables
@@ -259,7 +258,7 @@ mint="SOL"
 
 [swap.strategy_defaults]
 meteora_bin_limit=20
-prefer_success=true
+prefer_success=false # warning: setting this to true will land txs and pay Jito tips even if there's no arbitrage opportunity.
 
 [[swap.strategy]]
 cu_limit=360000
