@@ -1,0 +1,21 @@
+[launcher]
+task="create-lookup-table"
+jvm_args=["-Xmx512m"]
+
+[config]
+keypair_path="${DEFAULT_KEYPAIR_PATH}" # the fee payer and authority
+blockhash_rpc_url="${DEFAULT_RPC_URL}"
+sender_rpc_urls=[
+    "${DEFAULT_RPC_URL}"
+]
+
+# the path (must be a folder) to save new lookup table files to (the file is simply to keep track of the address)
+save_path="" # leave empty to default to the same directory as this configuration file
+
+# optional - account addresses you always want in this table
+default_addresses=[
+]
+
+# optional - any market address that'd be used in one or more onchain bot configuration
+onchain_config_file_paths=[
+]

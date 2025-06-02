@@ -2,8 +2,6 @@
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-task_dir=$*
-
 java_exe_path=""
 
 install_java() {
@@ -95,20 +93,21 @@ download_file() {
 launch() {
   echo
 
-  args_file=$(mktemp)
+  export NOTARB_LAUNCHER_SCRIPT_DIR="$script_dir"
+  export NOTARB_LAUNCHER_CMD_FILE=$(mktemp)
 
-  "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$script_dir" "$task_dir" "$args_file"
+  "$java_exe_path" -cp "notarb-launcher.jar" org.notarb.launcher.Main "$@"
 
   if [[ $? -eq 0 ]]; then
-    args=$(cat "$args_file")
+    cmd=$(cat "$NOTARB_LAUNCHER_CMD_FILE")
   fi
 
-  rm -f "$args_file" || true
+  rm -f "$NOTARB_LAUNCHER_CMD_FILE" || true
 
-  if [[ $args ]]; then
-    exec "$java_exe_path" $args
+  if [[ $cmd ]]; then
+    exec "$java_exe_path" $cmd
   fi
 }
 
 install_java
-launch
+launch "$@"
