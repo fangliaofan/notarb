@@ -1,5 +1,7 @@
 @echo off
 
+set "script_dir=%~dp0"
+
 :: Install Java
 
 echo.
@@ -44,12 +46,12 @@ if not errorlevel 1 (
 :launch
 echo.
 
-set "NOTARB_LAUNCHER_SCRIPT_DIR=%~dp0"
+set "NOTARB_LAUNCHER_SCRIPT_DIR=%script_dir%"
 set "NOTARB_LAUNCHER_CMD_FILE=%temp%\na_launcher_cmd_%random%.tmp"
 
 "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main %*
 if not errorlevel 1 (
-    set /p cmd=<"%NOTARB_LAUNCHER_CMD_FILE%"
+    set /p cmd=<"%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
 )
 
 del "%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
