@@ -1,11 +1,11 @@
-# these jvm args that are applied to every task
+# jvm args that are applied to all tasks
 default_jvm_args=[
     "--enable-preview", # required by all notarb tasks
     "--add-exports=java.base/jdk.internal.util=ALL-UNNAMED", # required by all notarb tasks
     "--enable-native-access=ALL-UNNAMED", # required by all notarb tasks
 ]
 
-# optional - name tasks so you can run tasks by name rather than path
+# optional - name tasks so they can be run by name instead of path
 named_tasks=[
     { name="unwrap", path="tools/unwrap-wsol.toml" },
     { name="wrap", path="tools/wrap-sol.toml" },
