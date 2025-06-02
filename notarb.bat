@@ -50,8 +50,10 @@ set "NOTARB_LAUNCHER_CMD_FILE=%temp%\na_launcher_cmd_%random%.tmp"
 "%java_exe_path%" -cp "notarb-launcher.jar" org.notarb.launcher.Main %*
 if not errorlevel 1 (
     set /p cmd=<"%NOTARB_LAUNCHER_CMD_FILE%"
-    del "%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
+)
+
+del "%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
+
+if defined cmd (
     call "%java_exe_path%" %%cmd%%
-) else (
-    del "%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
 )
