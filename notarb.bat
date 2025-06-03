@@ -57,5 +57,5 @@ if not errorlevel 1 (
 del "%NOTARB_LAUNCHER_CMD_FILE%" 2>nul
 
 if defined cmd (
-    call "%java_exe_path%" %%cmd%%
+    call "%java_exe_path%" %cmd%
 )
