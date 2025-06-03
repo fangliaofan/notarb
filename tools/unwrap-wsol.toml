@@ -2,7 +2,7 @@
 task="unwrap-wsol"
 jvm_args=["-Xmx512m"]
 
-[unwrap]
+[config]
 keypair_paths=[
     "${DEFAULT_KEYPAIR_PATH}"
 ]

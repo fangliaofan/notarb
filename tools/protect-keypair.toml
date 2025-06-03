@@ -1,0 +1,8 @@
+[launcher]
+task="protect-keypair"
+jvm_args=["-Xmx512m"]
+
+[config]
+keypair_paths=[
+    "${DEFAULT_KEYPAIR_PATH}"
+]

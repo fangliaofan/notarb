@@ -2,7 +2,7 @@
 task="wrap-sol"
 jvm_args=["-Xmx512m"]
 
-[wrap]
+[config]
 keypair_paths=[
     "${DEFAULT_KEYPAIR_PATH}"
 ]
