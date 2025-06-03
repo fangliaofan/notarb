@@ -149,6 +149,7 @@ You can run these tasks by passing them as arguments:
 | `jupiter-server`| Runs the self-hosted Jupiter API server           |
 | `jupiter-bot`   | Starts the Jupiter arbitrage bot                  |
 | `onchain-bot`   | Starts the on-chain arbitrage bot                 |
+| `protect-keypair`| Encrypt a wallet file                         |
 
 ---
 
