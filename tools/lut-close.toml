@@ -1,13 +1,11 @@
 [launcher]
-task="create-lookup-table"
+task="close-lookup-table"
 jvm_args=["-Xmx512m"]
 
 [config]
 keypair_path="${DEFAULT_KEYPAIR_PATH}" # the fee payer and authority
 
-save_path="created-lookup-tables" # optional
-
-blockhash_rpc_url="${DEFAULT_RPC_URL}"
+blockhash_rpc_url="${DEFAULT_RPC_URL}" # the rpc used for loading things like blockhash and slot
 
 sender_rpc_urls=[
     "${DEFAULT_RPC_URL}"

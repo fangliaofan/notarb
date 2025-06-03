@@ -1,1 +1,24 @@
-#todo
+[launcher]
+task="extend-lookup-table"
+jvm_args=["-Xmx512m"]
+
+[config]
+keypair_path="${DEFAULT_KEYPAIR_PATH}" # the fee payer and authority
+
+blockhash_rpc_url="${DEFAULT_RPC_URL}"
+
+accounts_rpc_url="${DEFAULT_RPC_URL}"
+
+sender_rpc_urls=[
+    "${DEFAULT_RPC_URL}"
+]
+
+# optional - specific addresses you want in the table
+addresses=[
+]
+
+# optional - any address that'd be used in one or more onchain bot
+onchain_config_file_paths=[
+]
+
+onchain_exclude_dynamic_accounts=true # accounts that change often like meteora dlmm bin array accounts
