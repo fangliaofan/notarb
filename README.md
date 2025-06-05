@@ -141,15 +141,22 @@ You can run these tasks by passing them as arguments:
 
 #### 📋 Available Tasks
 
-| Task            | Description                                       |
-|-----------------|---------------------------------------------------|
-| `update`        | Automatically updates NotArb and its dependencies |
-| `version`       | Displays version information                      |
-| `help`          | Displays a help message with available commands   |
-| `jupiter-server`| Runs the self-hosted Jupiter API server           |
-| `jupiter-bot`   | Starts the Jupiter arbitrage bot                  |
-| `onchain-bot`   | Starts the on-chain arbitrage bot                 |
-| `protect-keypair`| Encrypt a wallet file                         |
+| Task                | Description                                        |
+|---------------------|--------------------------------------------------|
+| `update`            | Automatically updates NotArb and its dependencies  |
+| `version`           | Displays version information                       |
+| `help`              | Displays a help message with available commands    |
+| `jupiter-server`    | Runs the self-hosted Jupiter API server            |
+| `jupiter-bot`       | Starts the Jupiter arbitrage bot                   |
+| `onchain-bot`       | Starts the on-chain arbitrage bot                  |
+| `protect-keypair`   | Encrypt a wallet file                              |
+| `create-lookup-table`   | Creates a new lookup table                     |
+| `extend-lookup-table`   | Extends an existing lookup table               |
+| `deactivate-lookup-table` | Deactivates a lookup table                   |
+| `close-lookup-table`     | Closes a lookup table                         |
+| `wrap`              | Wrap WSOL                                          |
+| `unwrap`            | Unwrap WSOL                                       |
+
 
 ---
 

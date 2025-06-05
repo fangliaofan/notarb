@@ -15,6 +15,7 @@
    - [For Windows](#for-windows)
 2. [🔧 Core Configuration](#-core-configuration)
    - [Essential Services](#essential-services)
+   - [Include Paths](#include_paths)
 3. [🪙 Mint Suppliers](#-mint-suppliers)
    - [Mint Tags](#mint-tags)
    - [Timestamp in URLs](#timestamp-in-urls)
@@ -147,7 +148,33 @@ rpc_url = "${DEFAULT_RPC_URL}"
 [plugin]
 class = "org.notarb.DefaultJito"  # or "org.notarb.DefaultSpam"
 ```
+### include_paths
 
+**Purpose**: Use this to modularize your configuration by easily including other TOML files.
+
+```toml
+include_paths = [
+  "strategies/meme.toml",
+  "strategies/stable.toml",
+  "strategies/kamino.toml"
+]
+```
+
+These paths are relative to the working directory where you run `notarb.sh` / `notarb.bat`.
+Each file you include should be a valid TOML config file, typically containing sections like:
+
+```toml
+[[swap]]
+enabled=true
+mint="USDC"
+
+[[swap.strategy]]
+min_spend=1
+max_spend=5000
+min_gain_lamports=10000
+priority_fee_percent=1
+static_tip_percent=25
+```
 ---
 
 ## 🪙 Mint Suppliers

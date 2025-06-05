@@ -19,6 +19,7 @@
    - [🔗 On-Chain Specific Variables](#-on-chain-specific-variables)
    - [🧠 Jito](#-jito-variables)
    - [🌀 Spam](#-spam-variables)
+   - [📊 Supported DEXes](#-supported-dexes)
 3. [🔧 Essential Services](#essential-services)
 4. [🔄 Market Configuration](#-market-configuration)
    - [File-based Markets](#file-based-markets)
@@ -143,6 +144,17 @@ protect_keypair=true
 | `spam_senders`                 | array    | List of RPC endpoints used to spam transactions.                            |
 | `max_idle_connections`         | int      | Maximum number of persistent HTTP connections per spam RPC.                 |
 
+## 🔗 Supported DEXes
+
+> ℹ️ **Note:** You can add any unsupported market to your configuration.  
+> The bot will automatically filter out unsupported entries—they will not cause an error.
+
+| DEX Name     | Type     | Address                                      |
+|--------------|----------|----------------------------------------------|
+| Raydium AMM  | AMM      | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` |
+| Meteora DLMM | DLMM     | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` |
+| Pump AMM     | AMM      | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
+| Ray CPMM     | CPMM     | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` |
 
 ---
 
@@ -556,6 +568,6 @@ cooldown_ms=369
 ## 🔗 Official Links
 
 - 📦 [Download NotArb](https://github.com/NotArb/Release/releases/)
-- 📊 [Dune Dashboard](https://dune.notarb.org/)
+- 📊 [Dune On-Chain Dashboard](https://dune.com/notarb/notarb-on-chain-dashboard)
 - 💬 [Join Discord](https://discord.notarb.org)
 
