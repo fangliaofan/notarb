@@ -128,10 +128,11 @@ protect_keypair=true
 
 | Field                    | Type   | Description                                                                 |
 |--------------------------|--------|-----------------------------------------------------------------------------|
-| `min_jito_tip_lamports`  | int    | Minimum Jito tip in lamports per transaction.                               |
-| `max_jito_tip_lamports`  | int    | Maximum Jito tip in lamports per transaction.                               |
-| `exclude_jito_senders`   | array   | List of `jito.rpc_proxy` or `jito.rpc` `id`s to exclude from sending       |
-
+| `min_jito_tip_lamports`    | int    | Minimum Jito tip in lamports per transaction.                               |
+| `max_jito_tip_lamports`    | int    | Maximum Jito tip in lamports per transaction.                               |
+| `exclude_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to exclude from sending.         |
+| `include_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to include.                      |
+| `max_bundle_transactions`  | int    | Max transactions to bundle together per Jito sender. Applies only when `prefer_success=true`. |
 
 ### 🌀 Spam Variables
 
@@ -151,10 +152,11 @@ protect_keypair=true
 
 | DEX Name     | Type     | Address                                      |
 |--------------|----------|----------------------------------------------|
-| Raydium AMM  | AMM      | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` |
-| Meteora DLMM | DLMM     | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` |
-| Pump AMM     | AMM      | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
-| Ray CPMM     | CPMM     | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` |
+| `Raydium AMM`  | AMM      | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` |
+| `Meteora DLMM` | DLMM     | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` |
+| `Pump AMM`     | AMM      | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
+| `Ray CPMM`     | CPMM     | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` |
+| `Meteora DAMMV2` | DAMM   | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG`	|
 
 ---
 
@@ -451,7 +453,6 @@ spam_senders=[
 ```
 
 ---
----
 
 ### ✅ Jito + Spam Full Example
 
@@ -570,4 +571,3 @@ cooldown_ms=369
 - 📦 [Download NotArb](https://github.com/NotArb/Release/releases/)
 - 📊 [Dune On-Chain Dashboard](https://dune.com/notarb/notarb-on-chain-dashboard)
 - 💬 [Join Discord](https://discord.notarb.org)
-
