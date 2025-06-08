@@ -1,0 +1,8 @@
+[launcher]
+task="rpc-health"
+jvm_args=["-Xmx512m"]
+
+[config]
+rpc_urls=[
+    "${DEFAULT_RPC_URL}"
+]

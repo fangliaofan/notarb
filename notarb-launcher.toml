@@ -14,4 +14,5 @@ named_tasks=[
     { name="extend-lookup-table", path="tools/lut-extend.toml" },
     { name="deactivate-lookup-table", path="tools/lut-deactivate.toml" },
     { name="close-lookup-table", path="tools/lut-close.toml" },
+    { name="rpc-health", path="tools/rpc-health.toml" }
 ]
