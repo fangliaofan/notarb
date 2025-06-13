@@ -23,6 +23,11 @@ delay_seconds=3
 rpc_url="${DEFAULT_RPC_URL}"
 delay_seconds=3
 
+[account_size_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+invalid_account_size=200 # the default size to use for invalid accounts (accounts with no data, which can sometimes happen when accounts that don't exist yet)
+buffer_size=1500 # how many extra bytes would you like to append to the total size (just a fail-safe type value, can be 0)
+
 [market_loader]
 rpc_url="${DEFAULT_RPC_URL}"
 
