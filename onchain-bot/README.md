@@ -80,7 +80,7 @@
 3. **Start the bot**
 
    ```cmd
-   notarb.bat myconfig.toml
+   .\notarb.bat myconfig.toml
    ```
 
 ---
