@@ -9,7 +9,6 @@
 > *Exact specifications each parameters with examples for both Jito and Spam*
 
 ---
-
 ## 📋 Table of Contents
 
 1. [✨ Quick Start](#-quick-start)
@@ -27,15 +26,16 @@
 5. [🔍 Lookup Tables](#-lookup-tables)
    - [File-based](#file-based)
    - [URL-based](#url-based)
-6. [⚡ Transaction Execution](#-transaction-execution)
-7. [🎯 Strategy Configuration](#-strategy-configuration)
+6. [📦 Account Size Loader](#-account-size-loader)
+7. [⚡ Transaction Execution](#-transaction-execution)
+8. [🎯 Strategy Configuration](#-strategy-configuration)
    - [🧠 Jito Mode](#-jito-mode)
    - [🌀 Spam Mode](#-spam-mode)
-8. [📚 Complete Examples](#-complete-examples)
+9. [📚 Complete Examples](#-complete-examples)
    - [✅ Jito Configuration](#-jito-configuration)
    - [✅ Spam Configuration](#-spam-configuration)
    - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
-9. [🔗 Official Links](#-official-links)
+10. [🔗 Official Links](#-official-links)
 
 ---
 
@@ -43,34 +43,45 @@
 
 ### For Linux/Mac
 
-```bash
-# 1. Download and extract
-wget https://github.com/NotArb/Release/releases/download/v1.0.0/notarb-1.0.0.zip
-unzip notarb-1.0.0.zip -d notarb
-cd notarb/onchain-bot
+1. **Download and extract**  
+   Go to the [latest release page](https://github.com/NotArb/Release/releases/latest) and download the `.zip` file. Then extract and navigate to the bot directory:
 
-# 2. Configure your bot
-cp example.toml myconfig.toml
-nano myconfig.toml
+   ```bash
+   unzip notarb-x.x.x.zip -d notarb
+   cd notarb/onchain-bot
+   ```
 
-# 3. Start the bot
-bash notarb.sh myconfig.toml
-```
+2. **Configure your bot**
+
+   ```bash
+   cp example.toml myconfig.toml
+   nano myconfig.toml
+   ```
+
+3. **Start the bot**
+
+   ```bash
+   bash notarb.sh myconfig.toml
+   ```
 
 ### For Windows
 
-```cmd
-:: 1. Download and extract from:
-:: https://github.com/NotArb/Release/releases/
+1. **Download and extract**  
+   Go to the [latest release page](https://github.com/NotArb/Release/releases/latest) and download the `.zip` file. Then extract the archive using File Explorer or any zip utility.
 
-:: 2. Configure your bot
-cd onchain-bot
-copy example.toml myconfig.toml
-notepad myconfig.toml
+2. **Configure your bot**
 
-:: 3. Start the bot
-notarb.bat myconfig.toml
-```
+   ```cmd
+   cd onchain-bot
+   copy example.toml myconfig.toml
+   notepad myconfig.toml
+   ```
+
+3. **Start the bot**
+
+   ```cmd
+   .\notarb.bat myconfig.toml
+   ```
 
 ---
 
@@ -123,6 +134,8 @@ protect_keypair=true
 | `meteora_bin_limit` | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
 | `prefer_success`    | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
 | `cu_limit`          | int    | Compute unit cap per transaction.                                           |
+| `borrow_amount`     | int    | FLASH LOANS: Amount to borrow in SOL lamports                               |
+
 
 ### 🧠 Jito Variables
 
@@ -150,14 +163,15 @@ protect_keypair=true
 > ℹ️ **Note:** You can add any unsupported market to your configuration.  
 > The bot will automatically filter out unsupported entries—they will not cause an error.
 
-| DEX Name     | Type     | Address                                      |
-|--------------|----------|----------------------------------------------|
-| `Raydium AMM`  | AMM      | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` |
-| `Meteora DLMM` | DLMM     | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` |
-| `Pump AMM`     | AMM      | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
-| `Ray CPMM`     | CPMM     | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` |
-| `Meteora DAMMV2` | DAMM   | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG`	|
-
+| DEX Name         | Address                                      |
+|------------------|----------------------------------------------|
+| `Raydium AMM`    | `675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8` |
+| `Raydium CPMM`       | `CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C` |
+| `Raydium CLMM`       | `CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK` |
+| `Meteora DLMM`   | `LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo` |
+| `Meteora DAMMV2` | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG` |
+| `Pump.Fun AMM`       | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
+| `Whirlpool`      | `whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc` |
 ---
 
 ## Essential Services
@@ -169,7 +183,7 @@ delay_seconds=3
 
 [blockhash_updater]
 rpc_url="${DEFAULT_RPC_URL}"
-delay_seconds=3
+delay_ms=1000
 
 [market_loader]
 rpc_url="${DEFAULT_RPC_URL}"
@@ -178,6 +192,24 @@ rpc_url="${DEFAULT_RPC_URL}"
 rpc_url="${DEFAULT_RPC_URL}"
 ```
 
+---
+## 📦 Account Size Loader
+
+> ⚠️ **Optional:** The Account Size Loader is used to optimize transaction priority by accurately estimating the memory allocation for Solana accounts.  
+> By default, Solana allocates 64MB of memory for accounts, but this can be significantly reduced to gain better priority in transactions.
+
+| Variable             | Type | Description                                                                                          |
+|----------------------|------|------------------------------------------------------------------------------------------------------|
+| `rpc_url`            | string | RPC endpoint used to fetch account sizes.                                                         |
+| `invalid_account_size`| int  | Default size (in bytes) to use for accounts that do not exist or return no data.                     |
+| `buffer_size`        | int  | Extra bytes to add as a safety margin when calculating account sizes (can be set to 0).              |
+
+```toml
+[account_size_loader]
+rpc_url="${DEFAULT_RPC_URL}"
+invalid_account_size=100       # Default size for invalid accounts
+buffer_size=1000               # Additional buffer bytes added to account size
+```
 ---
 
 ## 🔄 Market Configuration
@@ -334,7 +366,7 @@ delay_seconds=3
 
 [blockhash_updater]
 rpc_url="${DEFAULT_RPC_URL}"
-delay_seconds=3
+delay_ms=1000
 
 [market_loader]
 rpc_url="${DEFAULT_RPC_URL}"
@@ -403,7 +435,7 @@ delay_seconds=3
 
 [blockhash_updater]
 rpc_url="https://your.rpc.url"
-delay_seconds=3
+delay_ms=1000
 
 [market_loader]
 rpc_url="https://your.rpc.url"
@@ -478,7 +510,7 @@ delay_seconds=3
 
 [blockhash_updater]
 rpc_url="${DEFAULT_RPC_URL}"
-delay_seconds=3
+delay_ms=1000
 
 [market_loader]
 rpc_url="${DEFAULT_RPC_URL}"
