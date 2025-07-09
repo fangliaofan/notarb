@@ -108,6 +108,6 @@ cu_limit=369_369
 min_priority_fee_lamports=1900
 max_priority_fee_lamports=6900
 spam_senders=[
-    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
+    { rpc="my-super-duper-sender", max_retries=0 }, # optionally include preflight checks with preflight_commitment="CONFIRMED"
 ]
 cooldown_ms=369
