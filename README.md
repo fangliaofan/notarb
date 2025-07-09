@@ -29,7 +29,7 @@
 ### 1. Download & Extract
 
 Download the latest release from:  
-➡️ [https://github.com/NotArb/Release/releases](https://github.com/NotArb/Release/releases)
+➡️ [https://github.com/NotArb/Release/releases](https://github.com/NotArb/Release/releases/latest)
 
 Extract the `.zip` and navigate to the folder.
 
