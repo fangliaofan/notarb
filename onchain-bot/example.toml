@@ -90,7 +90,7 @@ meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
 cu_limit=369_369
 min_jito_tip_lamports=1000
 max_jito_tip_lamports=1000
-prefer_success=false # warning: setting this to true will land txs any pay Jito tips even if there's no arbitrage opportunity.
+#min_profit_lamports=0 # warning: setting this to 0 for jito strategies will always allow tipping, even if there was no profitable swap
 cooldown_ms=1337
 #exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
 
