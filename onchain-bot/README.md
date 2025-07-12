@@ -132,11 +132,11 @@ protect_keypair=true
 | Field               | Type   | Description                                                                 |
 |---------------------|--------|-----------------------------------------------------------------------------|
 | `meteora_bin_limit` | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
-| `prefer_success`    | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
 | `cu_limit`          | int    | Compute unit cap per transaction.                                           |
 | `borrow_amount`     | int    | FLASH LOANS: Amount to borrow in SOL lamports                               |
 | `max_lookup_tables` | int    | Maximum number of address lookup tables to use per route (default: 10)      |
 | `update_timestamp`  | int    | Unix timestamp in milliseconds. Market configs older than 5 minutes are ignored. |
+| `min_profit_lamports`  | int    | Required profit after network fee, priority fee and tips. When set to 0 while using Jito, ensures transaction landing (will always tip)  |
 
 ### 🧠 Jito Variables
 
@@ -146,7 +146,7 @@ protect_keypair=true
 | `max_jito_tip_lamports`    | int    | Maximum Jito tip in lamports per transaction.                               |
 | `exclude_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to exclude from sending.         |
 | `include_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to include.                      |
-| `max_bundle_transactions`  | int    | Max transactions to bundle together per Jito sender. Applies only when `prefer_success=true`. |
+| `max_bundle_transactions`  | int    | Max transactions to bundle together per Jito sender. Applies only when `min_profit_lamports=0`. |
 
 ### 🌀 Spam Variables
 
@@ -158,6 +158,7 @@ protect_keypair=true
 | `cooldown_ms`                  | int      | Milliseconds to wait between each transaction attempt.                      |
 | `spam_senders`                 | array    | List of RPC endpoints used to spam transactions.                            |
 | `max_idle_connections`         | int      | Maximum number of persistent HTTP connections per spam RPC.                 |
+| `preflight_commitment`         | string   | Commitment level for preflight checks. Options:<br>`"processed"`<br>`"confirmed"`<br>`"finalized"` |
 
 ## 🔗 Supported DEXes
 
@@ -306,7 +307,6 @@ mint="SOL"
 
 [swap.strategy_defaults]
 meteora_bin_limit=20
-prefer_success=false # warning: setting this to true will land txs and pay Jito tips even if there's no arbitrage opportunity.
 
 [[swap.strategy]]
 cu_limit=360000
@@ -405,7 +405,7 @@ mint="SOL"
 
 [swap.strategy_defaults]
 meteora_bin_limit=20
-prefer_success=true
+min_profit_lamports=0
 
 [[swap.strategy]]
 cu_limit=360000
@@ -575,7 +575,6 @@ meteora_bin_limit=20 # default 20 - helps keep cu down on high liquidity markets
 cu_limit=369_369
 min_jito_tip_lamports=1000
 max_jito_tip_lamports=1000
-prefer_success=false # warning: setting this to true will land txs and pay Jito tips even if there's no arbitrage opportunity.
 cooldown_ms=1337
 #exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
 
