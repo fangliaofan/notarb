@@ -135,7 +135,8 @@ protect_keypair=true
 | `prefer_success`    | bool   | When `true` with Jito, ensures swaps succeed unless it results in fewer arb tokens |
 | `cu_limit`          | int    | Compute unit cap per transaction.                                           |
 | `borrow_amount`     | int    | FLASH LOANS: Amount to borrow in SOL lamports                               |
-
+| `max_lookup_tables` | int    | Maximum number of address lookup tables to use per route (default: 10)      |
+| `update_timestamp`  | int    | Unix timestamp in milliseconds. Market configs older than 5 minutes are ignored. |
 
 ### 🧠 Jito Variables
 
@@ -172,6 +173,7 @@ protect_keypair=true
 | `Meteora DAMMV2` | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG` |
 | `Pump.Fun AMM`       | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
 | `Whirlpool`      | `whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc` |
+| `GAMMA`      | `GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT` |
 ---
 
 ## Essential Services
