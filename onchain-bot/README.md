@@ -16,8 +16,9 @@
    - [For Windows](#for-windows)
 2. [⚙️ Core Configuration](#️-core-configuration)
    - [🔗 On-Chain Specific Variables](#-on-chain-specific-variables)
-   - [🧠 Jito](#-jito-variables)
-   - [🌀 Spam](#-spam-variables)
+   - [🧠 Strategy Variables](#-strategy-variables)
+   - [🧠 Jito Variables](#-jito-variables)
+   - [🌀 Spam Variables](#-spam-variables)
    - [📊 Supported DEXes](#-supported-dexes)
 3. [🔧 Essential Services](#essential-services)
 4. [🔄 Market Configuration](#-market-configuration)
@@ -28,16 +29,13 @@
    - [URL-based](#url-based)
 6. [📦 Account Size Loader](#-account-size-loader)
 7. [⚡ Transaction Execution](#-transaction-execution)
-8. [🎯 Strategy Configuration](#-strategy-configuration)
-   - [🧠 Jito Mode](#-jito-mode)
-   - [🌀 Spam Mode](#-spam-mode)
-9. [📚 Complete Examples](#-complete-examples)
+8. [📚 Complete Examples](#-complete-examples)
    - [✅ Jito Configuration](#-jito-configuration)
    - [✅ Spam Configuration](#-spam-configuration)
    - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
-10. [🔗 Official Links](#-official-links)
-
+9. [🔗 Official Links](#-official-links)
 ---
+
 
 ## ✨ Quick Start
 
@@ -129,36 +127,61 @@ protect_keypair=true
 
 ### 🔗 On-Chain Specific Variables
 
-| Field               | Type   | Description                                                                 |
-|---------------------|--------|-----------------------------------------------------------------------------|
-| `meteora_bin_limit` | int    | Max number of bins for Meteora swaps (recommendation: 20)                   |
-| `cu_limit`          | int    | Compute unit cap per transaction.                                           |
-| `borrow_amount`     | int    | FLASH LOANS: Amount to borrow in SOL lamports                               |
-| `max_lookup_tables` | int    | Maximum number of address lookup tables to use per route (default: 10)      |
-| `update_timestamp`  | int    | Unix timestamp in milliseconds. Market configs older than 5 minutes are ignored. |
-| `min_profit_lamports`  | int    | Required profit after network fee, priority fee and tips. When set to 0 while using Jito, ensures transaction landing (will always tip)  |
+These apply to chain state validation and timing.
+
+| Field              | Type   | Description                                                                 |
+|--------------------|--------|-----------------------------------------------------------------------------|
+| `update_timestamp` | int    | Unix timestamp in milliseconds. Market configs older than 5 minutes are ignored. |
+
+---
+
+### 🧠 Strategy Variables
+
+These are the core strategy-level configuration options used across spam and Jito execution paths.
+
+| Field                        | Type   | Description                                                                 |
+|------------------------------|--------|-----------------------------------------------------------------------------|
+| `meteora_bin_limit`          | int    | Max number of bins for Meteora swaps (recommendation: 20).                 |
+| `cu_limit`                   | int    | Compute unit cap per transaction.                                           |
+| `borrow_amount`              | int    | FLASH LOANS: Amount to borrow in SOL lamports.                              |
+| `max_lookup_tables`          | int    | Maximum number of address lookup tables to use per route (default: 10).     |
+| `min_profit_lamports`        | int    | Required profit after network fee, priority fee, and tips. When set to 0 while using Jito, ensures transaction landing (will always tip). |
+| `min_priority_fee_lamports`  | int    | Minimum priority fee (in lamports) for spam transactions.                   |
+| `max_priority_fee_lamports`  | int    | Maximum priority fee (in lamports) for spam transactions.                   |
+
+---
 
 ### 🧠 Jito Variables
 
-| Field                    | Type   | Description                                                                 |
-|--------------------------|--------|-----------------------------------------------------------------------------|
+| Field                      | Type   | Description                                                                 |
+|----------------------------|--------|-----------------------------------------------------------------------------|
 | `min_jito_tip_lamports`    | int    | Minimum Jito tip in lamports per transaction.                               |
 | `max_jito_tip_lamports`    | int    | Maximum Jito tip in lamports per transaction.                               |
-| `exclude_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to exclude from sending.         |
-| `include_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` ids to include.                      |
-| `max_bundle_transactions`  | int    | Max transactions to bundle together per Jito sender. Applies only when `min_profit_lamports=0`. |
+| `exclude_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` IDs to exclude from sending.         |
+| `include_jito_senders`     | array  | List of `jito.rpc` or `jito.rpc_proxy` IDs to include.                      |
+| `max_bundle_transactions`  | int    | Max transactions to bundle together per Jito sender. Applies only when `min_profit_lamports = 0`. |
+
+---
 
 ### 🌀 Spam Variables
 
-| Field                          | Type     | Description                                                                 |
-|--------------------------------|----------|-----------------------------------------------------------------------------|
-| `cu_limit`                     | int      | Compute unit cap per transaction.                                           |
-| `min_priority_fee_lamports`    | int      | Minimum priority fee (in lamports) for spam transactions.                   |
-| `max_priority_fee_lamports`    | int      | Maximum priority fee (in lamports) for spam transactions.                   |
-| `cooldown_ms`                  | int      | Milliseconds to wait between each transaction attempt.                      |
-| `spam_senders`                 | array    | List of RPC endpoints used to spam transactions.                            |
-| `max_idle_connections`         | int      | Maximum number of persistent HTTP connections per spam RPC.                 |
-| `preflight_commitment`         | string   | Commitment level for preflight checks. Options:<br>`"processed"`<br>`"confirmed"`<br>`"finalized"` |
+| Field                  | Type     | Description                                                       |
+|------------------------|----------|-------------------------------------------------------------------|
+| `cooldown_ms`          | int      | Milliseconds to wait between each transaction attempt.            |
+| `max_idle_connections` | int      | Maximum number of persistent HTTP connections per spam RPC.       |
+| `spam_senders`         | array    | List of RPC endpoint configurations used to spam transactions.    |
+
+#### 🔁 `spam_senders` Item Structure
+
+Each entry in the `spam_senders` array should be an object with the following fields:
+
+| Field                   | Type     | Description                                                                 |
+|-------------------------|----------|-----------------------------------------------------------------------------|
+| `url`                   | string   | RPC endpoint URL.                                                           |
+| `preflight_commitment` | string   | Commitment level for preflight checks. Options:<br>`"processed"`<br>`"confirmed"`<br>`"finalized"` |
+| `max_retries`           | int      | Maximum number of retry attempts for the transaction. If not set, it will retry until the blockhash expires or the transaction lands. Typically set to `0`. |
+
+---
 
 ## 🔗 Supported DEXes
 
