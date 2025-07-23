@@ -21,19 +21,21 @@
    - [🌀 Spam Variables](#-spam-variables)
    - [📊 Supported DEXes](#-supported-dexes)
 3. [🔧 Essential Services](#essential-services)
-4. [🔄 Market Configuration](#-market-configuration)
+4. [🌀 Dynamic Strategy Attributes](#-dynamic-strategy-attributes)
+5. [🔄 Market Configuration](#-market-configuration)
    - [File-based Markets](#file-based-markets)
    - [URL-based Markets](#url-based-markets)
-5. [🔍 Lookup Tables](#-lookup-tables)
+6. [🔍 Lookup Tables](#-lookup-tables)
    - [File-based](#file-based)
    - [URL-based](#url-based)
-6. [📦 Account Size Loader](#-account-size-loader)
-7. [⚡ Transaction Execution](#-transaction-execution)
-8. [📚 Complete Examples](#-complete-examples)
-   - [✅ Jito Configuration](#-jito-configuration)
-   - [✅ Spam Configuration](#-spam-configuration)
-   - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
-9. [🔗 Official Links](#-official-links)
+7. [📦 Account Size Loader](#-account-size-loader)
+8. [🔄 WSOL Unwrapper](#-wsol-unwrapper)
+9. [⚡ Transaction Execution](#-transaction-execution)
+10. [📚 Complete Examples](#-complete-examples)
+    - [✅ Jito Configuration](#-jito-configuration)
+    - [✅ Spam Configuration](#-spam-configuration)
+    - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
+11. [🔗 Official Links](#-official-links)
 ---
 
 
@@ -141,11 +143,11 @@ These are the core strategy-level configuration options used across spam and Jit
 
 | Field                        | Type   | Description                                                                 |
 |------------------------------|--------|-----------------------------------------------------------------------------|
-| `meteora_bin_limit`          | int    | Max number of bins for Meteora swaps (recommendation: 20).                 |
+| `meteora_bin_limit`          | int    | Max number of bins for Meteora swaps (recommendation: 20).                  |
 | `cu_limit`                   | int    | Compute unit cap per transaction.                                           |
-| `borrow_amount`              | int    | FLASH LOANS: Amount to borrow in SOL lamports.                              |
+| `flash_loan`                 | bool   | Enables flash loan functionality (12.5% fee on profits only). Regular trades: 10% fee. Default: false |
 | `max_lookup_tables`          | int    | Maximum number of address lookup tables to use per route (default: 10).     |
-| `min_profit_lamports`        | int    | Required profit after network fee, priority fee, and tips. When set to 0 while using Jito, ensures transaction landing (will always tip). |
+| `require_profit`             | bool   | When false, executes all swaps with Jito (always tips). When true (default), only executes profitable swaps after fees. |
 | `min_priority_fee_lamports`  | int    | Minimum priority fee (in lamports) for spam transactions.                   |
 | `max_priority_fee_lamports`  | int    | Maximum priority fee (in lamports) for spam transactions.                   |
 
@@ -197,7 +199,7 @@ Each entry in the `spam_senders` array should be an object with the following fi
 | `Meteora DAMMV2` | `cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG` |
 | `Pump.Fun AMM`       | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
 | `Whirlpool`      | `whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc` |
-| `GAMMA`      | `GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT` |
+| `GOOSEFX (GAMMA)`      | `GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT` |
 ---
 
 ## Essential Services
@@ -217,7 +219,49 @@ rpc_url="${DEFAULT_RPC_URL}"
 [lookup_table_loader]
 rpc_url="${DEFAULT_RPC_URL}"
 ```
+---
+## 🌀 Dynamic Strategy Attributes
 
+> 🚀 Dynamically update strategy parameters without restarting the bot.  
+> Enables real-time strategy adjustments through external configuration files.
+
+### Configuration
+```toml
+[dynamic_attributes]
+path="/path/to/attributes-file.json"
+update_ms=50
+```
+
+### Supported Fields
+| Field | Type | Description |
+|-------|------|-------------|
+| `enabled` | bool | Enable/disable strategy |
+| `cu_limit` | int | Compute unit limit |
+| `min_priority_fee_lamports` | int | Min priority fee |
+| `max_priority_fee_lamports` | int | Max priority fee |
+| `min_jito_tip_lamports` | int | Min Jito tip |
+| `max_jito_tip_lamports` | int | Max Jito tip |
+| `cooldown_ms` | int | Transaction delay |
+
+### Example
+**Attributes File:**
+```json
+{
+  "enable_strat": true,
+  "strat_cu": 400000,
+  "min_prio": 50000,
+  "cooldown": 50
+}
+```
+
+**Strategy Config:**
+```toml
+[[swap.strategy]]
+enabled={key="enable_strat",default_value=false}
+cu_limit={key="strat_cu",default_value=300000}
+min_priority_fee_lamports={key="min_prio",default_value=0}
+cooldown_ms={key="cooldown",default_value=1000}
+```
 ---
 ## 📦 Account Size Loader
 
@@ -237,6 +281,39 @@ invalid_account_size=100       # Default size for invalid accounts
 buffer_size=1000               # Additional buffer bytes added to account size
 ```
 ---
+## 🔄 WSOL Unwrapper
+
+> ⚠️ **Optional:** Automatically unwraps WSOL when your SOL balance falls below a specified threshold.  
+
+### Configuration Parameters
+
+| Variable               | Type     | Description                                                                                          |
+|------------------------|----------|------------------------------------------------------------------------------------------------------|
+| `enabled`              | bool     | Must be `true` to activate automatic unwrapping (default: `false`)                                   |
+| `check_minutes`        | int      | Frequency in minutes to check balance (minimum: 1, default: 5)                                      |
+| `trigger_sol`          | float    | Triggers unwrap when SOL balance falls below this amount (default: 0.5)                             |
+| `target_sol`          | float    | Target SOL balance to maintain after unwrapping (default: 1.0)                                      |
+| `priority_fee_lamports`| int      | Optional priority fee to help transactions land (recommended: 190-500, default: 0)                  |
+| `reader_rpc_url`       | string   | RPC used for balance checks (low-latency recommended)                                               |
+| `sender_rpc_urls`      | string[] | List of RPCs for sending unwrap transactions (at least 1 required)                                  |
+
+### Example Configuration
+
+```toml
+[wsol_unwrapper]
+enabled=true
+check_minutes=1            # Check balance every minute
+trigger_sol=0.5           # Unwrap when SOL < 0.5
+target_sol=1.0            # Maintain at least 1 SOL unwrapped
+priority_fee_lamports=190  # Priority fee for unwrap txs
+reader_rpc_url="http://ny-rpc.notarb.org:7399/"
+sender_rpc_urls=[
+    "http://ny-rpc.notarb.org:7399/",
+    "http://ny-rpc2.notarb.org:7400/"
+]
+```
+---
+
 
 ## 🔄 Market Configuration
 
@@ -428,7 +505,7 @@ mint="SOL"
 
 [swap.strategy_defaults]
 meteora_bin_limit=20
-min_profit_lamports=0
+require_profit=false
 
 [[swap.strategy]]
 cu_limit=360000
@@ -504,8 +581,8 @@ min_priority_fee_lamports=10000
 max_priority_fee_lamports=150000
 cooldown_ms=1000
 spam_senders=[
-  { rpc="primary-rpc", skip_preflight=true, max_retries=0 },
-  { rpc="jito-backup", skip_preflight=true, max_retries=0 }
+  { rpc="primary-rpc", preflight_commitment="confirmed", max_retries=0 },
+  { rpc="jito-backup", preflight_commitment="confirmed", max_retries=0 }
 ]
 ```
 
@@ -600,6 +677,7 @@ min_jito_tip_lamports=1000
 max_jito_tip_lamports=1000
 cooldown_ms=1337
 #exclude_jito_senders=["jito-2"] # optionally exclude specific jito senders
+require_profit=false
 
 ## SOL (Spam)
 [[swap]]
@@ -614,7 +692,7 @@ cu_limit=369_369
 min_priority_fee_lamports=1900
 max_priority_fee_lamports=6900
 spam_senders=[
-    { rpc="my-super-duper-sender", skip_preflight=true, max_retries=0 },
+    { rpc="my-super-duper-sender", preflight_commitment="confirmed", max_retries=0 },
 ]
 cooldown_ms=369
 ```
