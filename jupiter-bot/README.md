@@ -142,6 +142,19 @@ rpc_url = "${DEFAULT_RPC_URL}"  # Replace with your RPC endpoint
 rpc_url = "${DEFAULT_RPC_URL}"
 ```
 
+#### [price_fetcher]
+**Purpose**: Fetches token prices for accurate profit calculations  
+**When**: Only required when using non-WSOL base tokens  
+
+```toml
+[price_fetcher]
+#bind_ip = ""           # Optional: Bind to specific IP
+#proxy_host = ""         # Optional: Proxy host
+#proxy_port = 123        # Optional: Proxy port
+#proxy_user = ""         # Optional: Proxy username
+#proxy_pass = ""         # Optional: Proxy password
+```
+
 #### [plugin]
 **Use DefaultJito for jito configurations and DefaultSpam for spam configurations**
 ```toml
