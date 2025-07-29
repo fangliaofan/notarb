@@ -20,6 +20,7 @@
    - [🧠 Jito Variables](#-jito-variables)
    - [🌀 Spam Variables](#-spam-variables)
    - [📊 Supported DEXes](#-supported-dexes)
+   - [➕ Fast & Astralane Low-Tip Senders](#-fast--astralane-low-tip-senders)
 3. [🔧 Essential Services](#essential-services)
 4. [🌀 Dynamic Strategy Attributes](#-dynamic-strategy-attributes)
 5. [🔄 Market Configuration](#-market-configuration)
@@ -37,6 +38,7 @@
     - [✅ Jito + Spam Full Example](#-jito--spam-full-example)
 11. [🔗 Official Links](#-official-links)
 ---
+
 
 
 ## ✨ Quick Start
@@ -145,7 +147,7 @@ These are the core strategy-level configuration options used across spam and Jit
 |------------------------------|--------|-----------------------------------------------------------------------------|
 | `meteora_bin_limit`          | int    | Max number of bins for Meteora swaps (recommendation: 20).                  |
 | `cu_limit`                   | int    | Compute unit cap per transaction.                                           |
-| `flash_loan`                 | bool   | Enables flash loan functionality (12.5% fee on profits only). Regular trades: 10% fee. Default: false |
+| `flash_loan`                 | bool   | Enables flash loan functionality (12.5% fee on profits only). Regular trades: 10% fee. The bot will randomly choose 1/2 available vaults. Default: false |
 | `max_lookup_tables`          | int    | Maximum number of address lookup tables to use per route (default: 10).     |
 | `require_profit`             | bool   | When false, executes all swaps with Jito (always tips). When true (default), only executes profitable swaps after fees. |
 | `min_priority_fee_lamports`  | int    | Minimum priority fee (in lamports) for spam transactions.                   |
@@ -200,6 +202,66 @@ Each entry in the `spam_senders` array should be an object with the following fi
 | `Pump.Fun AMM`       | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` |
 | `Whirlpool`      | `whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc` |
 | `GOOSEFX (GAMMA)`      | `GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT` |
+---
+
+---
+
+### ➕ Fast & Astralane Low-Tip Senders
+
+#### 🚀 Fast (Circular)
+
+Minimum **15,000 lamport tip** required.
+
+```toml
+[[spam_rpc]]
+id = "circular-fast"
+url = "https://fast.circular.fi/transactions/no-failure/notarb"
+max_idle_connections = 1
+tip_meta = { type = "FAST", api_key = "${CIRCULAR_API_KEY}" }
+```
+
+> ⚠️ This endpoint **will not work** when using `require_profit = true`.
+
+---
+
+#### 🌌 Astralane
+
+Minimum **10,000 lamport tip** required.
+
+```toml
+[[spam_rpc]]
+id = "astra-ny"
+url = "https://ny.gateway.astralane.io/iris"
+max_idle_connections = 1
+tip_meta = { type = "ASTRALANE", api_key = "${ASTRALANE_API_KEY}" }
+```
+
+---
+
+### ⚙️ Tip Configuration in Strategies
+
+Tips are configured in strategy settings using `min_spam_tip_lamports` and `max_spam_tip_lamports`:
+
+```toml
+[[swap]]
+enabled = true
+mint = "SOL"
+
+[swap.strategy_defaults]
+meteora_bin_limit = 12 # default 20 — helps reduce CU usage on high liquidity markets
+
+spam_senders = [
+    { rpc = "astra-ny" }
+]
+
+[[swap.strategy]]
+cu_limit = 369_369
+min_priority_fee_lamports = { key = "min_prio_fee", default_value = 190 }
+max_priority_fee_lamports = { key = "max_prio_fee", default_value = 19000 }
+min_spam_tip_lamports = 10_000 
+max_spam_tip_lamports = 10_000
+cooldown_ms = 250
+```
 ---
 
 ## Essential Services
