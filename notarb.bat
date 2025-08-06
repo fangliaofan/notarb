@@ -6,8 +6,8 @@ set "script_dir=%~dp0"
 
 echo.
 
-set "java_url=https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_windows-x64_bin.zip"
-set "java_folder=jdk-24.0.1"
+set "java_url=https://download.oracle.com/java/24/latest/jdk-24_windows-x64_bin.zip"
+set "java_folder=jdk-24.0.2"
 set "java_exe_path=%script_dir%%java_folder%\bin\java.exe"
 
 if exist "%java_exe_path%" (
