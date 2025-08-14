@@ -1,6 +1,6 @@
 # NotArb
 
-[![Join Discord](https://dcbadge.limes.pink/api/server/mYfAQnBfqy)](https://discord.notarb.org)
+[![Join Discord](https://dcbadge.limes.pink/api/server/eWG47Rzd6f)](https://discord.notarb.org)
 
 **NotArb** is a powerful trading platform for the Solana blockchain, featuring specialized arbitrage bots and utility tools.
 
