@@ -265,7 +265,7 @@ mint_exclude_tags = [ ["scam"], ["experimental", "volatile"] ]
 | `entry_only_direct_routes` | bool | Restrict to direct routes only |
 | `entry_restrict_intermediate_tokens` | bool | Block intermediate tokens |
 | `entry_max_accounts` | int | Max accounts for entry swap |
-| `entry_dexes` | string[] | Allowed DEXs for entry |
+| `entry_include_dexes` | string[] | Allowed DEXs for entry |
 | `entry_exclude_dexes` | string[] | Blocked DEXs for entry |
 
 ### 1.2 Exit Specific
@@ -276,7 +276,7 @@ mint_exclude_tags = [ ["scam"], ["experimental", "volatile"] ]
 | `exit_only_direct_routes` | bool | Restrict to direct routes only |
 | `exit_restrict_intermediate_tokens` | bool | Block intermediate tokens |
 | `exit_max_accounts` | int | Max accounts for exit swap |
-| `exit_dexes` | string[] | Allowed DEXs for exit |
+| `exit_include_dexes` | string[] | Allowed DEXs for exit |
 | `exit_exclude_dexes` | string[] | Blocked DEXs for exit |
 
 ### 2.0 Transaction Skipping
