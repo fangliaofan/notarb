@@ -1,5 +1,134 @@
 # 🚀 NotArb Jupiter Bot Configuration Guide
 
+WIP
+
+**How to Run**
+- Linux: `bash notarb.sh jupiter-bot/example.toml`
+- Windows: `notarb.bat jupiter-bot/example.toml`
+
+**Config Breakdown**
+
+```toml
+[notarb]
+acknowledge_terms_of_service=false # must be set to true to indicate you have read and accepted our Terms of Service
+```
+```toml
+[user]
+keypair_path="/path/to/keypair" # supported formats: json, txt (base58), or NotArb potected
+protect_keypair=false # optional - used to overwrite your keypair_path file with an encrypted keypair
+```
+```toml
+[jupiter]
+url="http://127.0.0.1:8080" # the url to your Jupiter server - ideally always local
+workers=4 # a worker is responsible for a single persistent Jupiter server connection, managed by an unique thread
+connect_timeout_ms=1000 # how long a connection can take before timing out
+request_timeout_ms=1000 # how long a request can take (sending + reading) before timing out
+ipv6=false # optional - not useful when using localhost (127.0.0.1)
+```
+```toml
+[blockhash_fetcher]
+rpc_url="" # the url of the rpc to be used to fetch blockhashes
+```
+```toml
+[token_accounts_fetcher] # not required, but advised
+rpc_url="" # the url of the rpc to be used to fetch open account information
+```
+```toml
+[price_fetcher] # optional
+bind_ip="" # optional
+bind_port=0 # optional
+proxy_host="" # optional
+proxy_socks=false # optional
+proxy_user="" # optional
+proxy_password="" # optional
+```
+```toml
+[wsol_unwrapper]
+enabled=false
+rpc_url="" # the url of the rpc to be used for reading/sending
+check_minutes=1 # how often to check if an unwrap is required
+min_sol=0.5 # the minimum amount of sol before an unwrap is triggered
+unwrap_sol=1 # the amount of sol to unwrap when triggered
+priority_fee_lamports=0 # optional - this can help the unwrap tx land (priority_fee_sol is also available)
+```
+```toml
+[[file_mints]]
+enabled=true
+update_seconds=5 # how often to read this file
+max_per_cycle=100 # optional - defaults to unlimited
+random_order=false
+path="mints.txt"
+```
+```toml
+[[url_mints]]
+enabled=true
+update_seconds=5 # how often to read this file
+max_per_cycle=100 # optional - defaults to unlimited
+random_order=false
+url="http://your.url/mints.txt"
+```
+```toml
+[plugin]
+class="org.notarb.DefaultSpam" # OR org.notarb.DefaultJito
+include_paths=[ "spam.toml" ] # optionally used to split plugin specific configurations into files
+```
+
+**Config Breakdown: Spam**
+```toml
+[[spam_rpc]]
+enabled=false
+id="rpc1"
+url=""
+workers=2
+connect_timeout_ms=5000
+request_timeout_ms=5000
+idle_timeout_ms=10_000
+ipv6=false
+```
+```toml
+[[swap]] # this breakdown block is only showing spam-specific strategy fields, not a working spam strategy
+...
+
+[[swap.strategy]]
+...
+max_opportunity_age_ms=1000 # also can use max_opportunity_age="1s"
+spam_senders=[
+   { rpc="rpc1", skip_preflight=false, max_retries=0 },
+]
+```
+
+**Config Breakdown: Jito**
+```toml
+[[jito_rpc]]
+enabled=true
+url="https://slc.mainnet.block-engine.jito.wtf"
+identifier=1
+requests_per_second=1
+connections=5
+connect_timeout_ms=5000
+request_timeout_ms=5000
+queue_timeout_ms=7500
+priority_queue=false
+always_queue=true
+```
+```toml
+[[swap]] # this breakdown block is only showing jito-specific strategy fields, not a working jito strategy
+...
+
+[[swap.strategy]]
+...
+dynamic_primary_tip_percent=0
+dynamic_secondary_tip_percent=0
+dynamic_secondary_tip_chance=0
+static_tip_lamports=20_000
+min_static_tip_percent=0
+max_static_tip_percent=0
+unwrap_tip=false
+sends=1
+```
+
+WIP
+
 ![GitHub release](https://img.shields.io/github/v/release/NotArb/Release)
 
 [![Join Discord](https://dcbadge.limes.pink/api/server/mYfAQnBfqy)](https://discord.notarb.org)
