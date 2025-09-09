@@ -210,7 +210,7 @@ Each entry in the `spam_senders` array should be an object with the following fi
 
 #### 🚀 Fast (Circular)
 
-Minimum **15,000 lamport tip** required.
+Minimum **7500 lamport tip** required.
 
 ```toml
 [[spam_rpc]]
